@@ -7,20 +7,4 @@
   </div>
 </div>
 <hr />
-<div class="row">
-  <div class="col-xs-12" *ngIf="(user | async)?.displayName">
-    <h5>I am {{(user | async)?.displayName}}</h5>
-  </div>
-  <div class="col-xs-12">
-    <h5><span *ngIf="(user | async)?.displayName">But now, </span>I want to be known as...</h5>
-    <div class="input-group">
-      <input type="text" class="form-control" [(ngModel)]="myDisplayName" autocomplete="off" autofocus required placeholder="My new name...">
-      <span class="input-group-btn">
-            <button class="btn btn-secondary" type="button" (click)="setDisplayName();"><span *ngIf="!(user | async)?.displayName">Set</span>
-      <span
-        *ngIf="(user | async)?.displayName">Change</span>
-        </button>
-        </span>
-    </div>
-  </div>
-</div>
+<app-display-name></app-display-name>
