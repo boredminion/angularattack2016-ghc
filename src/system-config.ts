@@ -39,6 +39,7 @@ const barrels: string[] = [
   'app/sidebar',
   'app/intro',
   'app/display-name',
+  'app/controls',
   /** @cli-barrel */
 ];
 

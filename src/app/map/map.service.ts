@@ -1,9 +1,38 @@
 import { Injectable } from '@angular/core';
 import {Observable, Observer} from 'rxjs/Rx';
+import {Subject}    from 'rxjs/Subject';
 import {ISpaceObject, Ship, SpaceObjectService} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
 import {AuthService} from '../shared/auth.service';
+
+export interface IAction {
+  label: string;
+  action: any;
+  time: any;
+}
+
+export class Action implements IAction {
+	label: string;
+	action: any;
+	time: any;
+
+  constructor(label: string, action: any) {
+	  this.label = label;
+	  this.action = action;
+	  this.time = 5;
+	  setInterval(() => {
+		  if (this.time > 0) {
+			  this.time--;
+		  }
+		  if (this.time === 0) {
+			  this.time = -1;
+			  this.action();
+			  this.label = '';
+		  }
+		}, 1000);
+	}
+}
 
 @Injectable()
 export class MapService {
@@ -18,6 +47,8 @@ export class MapService {
 	gridObserver: Observer<Cell[][]>;
 	grid: Cell[][] = [];
 	spaceObjects: ISpaceObject[] = [];
+	private _nextActionSource = new Subject<Action>();
+  	nextAction$ = this._nextActionSource.asObservable();
 
 	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
@@ -34,6 +65,9 @@ export class MapService {
 			}
 			this.spaceObjects = objects;
 			this.populateGrid();
+		});
+		this.nextAction$.subscribe(action => {
+			// may not need this
 		});
 	}
 
@@ -73,63 +107,97 @@ export class MapService {
 		}
 	}
 
-	keyAction(event: KeyboardEvent) {
-		if (event.keyCode === 32) {
-			console.log("pew pew");
-			switch (this.ship.facing) {
-				case 0:
-					this.pewPew((this.ship.x - 1), (this.ship.y));
-					break;
-				case 1:
-					this.pewPew((this.ship.x), (this.ship.y + 1));
-					break;
-				case 2:
-					this.pewPew((this.ship.x + 1), (this.ship.y));
-					break;
-				case 3:
-					this.pewPew((this.ship.x), (this.ship.y - 1));
-					break;
+	moveForward() {
+		let move = this.forwardCell();
+		if (this.collisionCheck(move[0], move[1])) {
+			console.log("can't move there");
+		} else {
+			this.ship.x = move[0];
+			this.ship.y = move[1];
+			if (this.ship.x === this.x) {
+				this.ship.x = 0;
 			}
-		}
-		if (event.keyCode === 38 || event.keyCode === 87) {
-			let move = this.forwardCell();
-			if (this.collisionCheck(move[0], move[1])) {
-				console.log("can't move there");
-			} else {
-				this.ship.x = move[0];
-				this.ship.y = move[1];
-				if (this.ship.x === this.x) {
-					this.ship.x = 0;
-				}
-				if (this.ship.x < 0) {
-					this.ship.x = this.x - 1;
-				}
-				if (this.ship.y === this.y) {
-					this.ship.y = 0;
-				}
-				if (this.ship.y < 0) {
-					this.ship.y = this.y - 1;
-				}
-				this.ship.x = this.wraparound(this.ship.x, this.x);
-				this.ship.y = this.wraparound(this.ship.y, this.y);
-				this.populateGrid();
+			if (this.ship.x < 0) {
+				this.ship.x = this.x - 1;
 			}
-		}
-		if (event.keyCode === 36 || event.keyCode === 81) {
-			if (this.ship.facing) {
-				this.ship.facing--;
-			} else {
-				this.ship.facing = 3;
+			if (this.ship.y === this.y) {
+				this.ship.y = 0;
 			}
-		}
-		if (event.keyCode === 33 || event.keyCode === 69) {
-			if (this.ship.facing < 3) {
-				this.ship.facing++;
-			} else {
-				this.ship.facing = 0;
+			if (this.ship.y < 0) {
+				this.ship.y = this.y - 1;
 			}
+			this.ship.x = this.wraparound(this.ship.x, this.x);
+			this.ship.y = this.wraparound(this.ship.y, this.y);
+			this.populateGrid();
 		}
 		this.spaceObjectService.moveShip(this.ship);
+	}
+
+	rotateRight() {
+		if (this.ship.facing < 3) {
+			this.ship.facing++;
+		} else {
+			this.ship.facing = 0;
+		}
+		this.spaceObjectService.moveShip(this.ship);
+	}
+
+	rotateLeft() {
+		if (this.ship.facing) {
+			this.ship.facing--;
+		} else {
+			this.ship.facing = 3;
+		}
+		this.spaceObjectService.moveShip(this.ship);
+	}
+
+	fireWeapon() {
+		console.log("pew pew");
+		switch (this.ship.facing) {
+			case 0:
+				this.pewPew((this.ship.x - 1), (this.ship.y));
+				break;
+			case 1:
+				this.pewPew((this.ship.x), (this.ship.y + 1));
+				break;
+			case 2:
+				this.pewPew((this.ship.x + 1), (this.ship.y));
+				break;
+			case 3:
+				this.pewPew((this.ship.x), (this.ship.y - 1));
+				break;
+		}
+	}
+	
+	actionMoveForward() {
+		this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
+	}
+	
+	actionRotateLeft() {
+		this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
+	}
+	
+	actionRotateRight() {
+		this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
+	}
+	
+	actionFireWeapon() {
+		this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
+	}
+
+	keyAction(event: KeyboardEvent) {
+		if (event.keyCode === 32) {
+			this.actionFireWeapon();
+		}
+		if (event.keyCode === 38 || event.keyCode === 87) {
+			this.actionMoveForward();
+		}
+		if (event.keyCode === 36 || event.keyCode === 81) {
+			this.actionRotateLeft();
+		}
+		if (event.keyCode === 33 || event.keyCode === 69) {
+			this.actionRotateRight();
+		}
 	}
 
 	populateGrid() {
