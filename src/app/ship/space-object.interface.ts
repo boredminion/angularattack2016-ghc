@@ -1,6 +1,7 @@
 import {SpaceObjectType} from './';
 
 export interface ISpaceObject {
+	image: string;
 	$key: string;
 	ownerKey: string;
 	x: number;

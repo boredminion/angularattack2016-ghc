@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable, Observer} from 'rxjs/Rx';
 import {Subject}    from 'rxjs/Subject';
-import {ISpaceObject, Ship, SpaceObjectService} from '../ship';
+import {ISpaceObject, Ship, SpaceObjectService, SpaceObjectType} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
 import {AuthService} from '../shared/auth.service';
@@ -48,6 +48,8 @@ export class MapService {
 	x: number = 9; //height of grid
 	y: number = 11; //width of grid
 	extent: number = 100; //max dimension of the map
+	maxPlanets: number = 100;
+
 
 	ship: Ship;
 	grid$: Observable<Cell[][]>;
@@ -235,9 +237,20 @@ export class MapService {
 	}
 
 	addObjects(grid) {
+		let planetCount = 0;
 		for (let i = 0; i < this.spaceObjects.length; i++) {
 			let obj = this.spaceObjects[i];
 			grid[obj.x][obj.y].contents = obj;
+			if(obj.type === SpaceObjectType.Planet) {
+				planetCount++;
+			}
+		}
+		if(planetCount < this.maxPlanets) {
+			let planetX = Math.floor(Math.random() * this.extent);
+			let planetY = Math.floor(Math.random() * this.extent);
+			if(!grid[planetX][planetY].contents) {
+				this.spaceObjectService.createPlanet(planetX, planetY, null);
+			}
 		}
 		return grid;
 	}

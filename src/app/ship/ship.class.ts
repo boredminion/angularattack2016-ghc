@@ -11,11 +11,13 @@ export class Ship implements ISpaceObject {
 	currentScore: number = 0;
 	stolenScore: number = 0;
 	totalScore: number = 0;
-	constructor(dir, x, y, ownerKey) {
+	image: string;
+	constructor(dir, x, y, ownerKey, image) {
 		this.facing = dir;
 		this.x = x;
 		this.y = y;
 		this.type = SpaceObjectType.Ship;
 		this.ownerKey = ownerKey;
+		this.image = image || 'spaceship14-240x185.png';
 	}
 }
