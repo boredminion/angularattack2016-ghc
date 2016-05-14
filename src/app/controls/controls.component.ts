@@ -16,6 +16,7 @@ export class ControlsComponent implements OnInit {
   }
 
   keyAction($event) {
+    $event.preventDefault();
 		this.mapService.keyAction($event);
 	}
   
