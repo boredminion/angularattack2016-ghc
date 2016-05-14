@@ -9,26 +9,33 @@ import {AuthService} from '../shared/auth.service';
 export interface IAction {
 	label: string;
 	action: any;
+	active: boolean;
 	time: any;
 }
 
 export class Action implements IAction {
 	label: string;
 	action: any;
+	active: boolean = true;
 	time: any;
 
 	constructor(label: string, action: any) {
 		this.label = label;
 		this.action = action;
 		this.time = 5;
-		setInterval(() => {
+		let interval = setInterval(() => {
 			if (this.time > 0) {
 				this.time--;
 			}
-			if (this.time === 0) {
-				this.time = -1;
+			if (this.active === false) {
+				clearInterval(interval);
+			}
+			if (this.time === 0 && this.active === true) {
+				this.time = '';
 				this.action();
 				this.label = '';
+				this.active = false;
+				clearInterval(interval);
 			}
 		}, 1000);
 	}
@@ -48,6 +55,7 @@ export class MapService {
 	spaceObjects: ISpaceObject[] = [];
 	private _nextActionSource = new Subject<Action>();
 	nextAction$ = this._nextActionSource.asObservable();
+	currentAction: Action;
 
 	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
@@ -66,7 +74,7 @@ export class MapService {
 			this.populateGrid();
 		});
 		this.nextAction$.subscribe(action => {
-			// may not need this
+			this.currentAction = action;
 		});
 	}
 
@@ -157,18 +165,30 @@ export class MapService {
 	}
 
 	actionMoveForward() {
+		if (this.currentAction) {
+			this.currentAction.active = false;
+		}
 		this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
 	}
 
 	actionRotateLeft() {
+		if (this.currentAction) {
+			this.currentAction.active = false;
+		}
 		this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
 	}
 
 	actionRotateRight() {
+		if (this.currentAction) {
+			this.currentAction.active = false;
+		}
 		this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
 	}
 
 	actionFireWeapon() {
+		if (this.currentAction) {
+			this.currentAction.active = false;
+		}
 		this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
 	}
 
