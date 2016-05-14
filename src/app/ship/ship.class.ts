@@ -1,9 +1,18 @@
 import {Direction} from '../map';
-import {IShip} from './';
+import {ISpaceObject, SpaceObjectType} from './';
 
-export class Ship implements IShip {
+export class Ship implements ISpaceObject {
+	$key: string;
 	facing: Direction;
+	ownerKey: string;
+	type: SpaceObjectType;
 	x: number;
 	y: number;
-	constructor(dir, x, y) { this.facing = dir; this.x = x; this.y = y; }
+	constructor(dir, x, y, ownerKey) {
+		this.facing = dir;
+		this.x = x;
+		this.y = y;
+		this.type = SpaceObjectType.Ship;
+		this.ownerKey = ownerKey;
+	}
 }
