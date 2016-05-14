@@ -19,7 +19,6 @@ export class MapComponent implements OnInit {
 	 }
 
 	ngOnInit() {
-		this.mapService.populateGrid();
 	}
 
 	keyAction($event) {

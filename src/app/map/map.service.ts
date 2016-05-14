@@ -108,7 +108,8 @@ export class MapService {
 				if (this.ship.y < 0) {
 					this.ship.y = this.y - 1;
 				}
-
+				this.ship.x = this.wraparound(this.ship.x, this.x);
+				this.ship.y = this.wraparound(this.ship.y, this.y);
 				this.populateGrid();
 			}
 		}
@@ -130,8 +131,8 @@ export class MapService {
 	}
 
 	populateGrid() {
+		this.grid = [[], [], [], [], [], [], [], [], []];
 		for (let i = 0; i < this.x; i++) {
-			this.grid[i] = [];
 			for (let j = 0; j < this.y; j++) {
 				this.grid[i][j] = new Cell(i, j);
 			}
@@ -143,8 +144,24 @@ export class MapService {
 	addObjects() {
 		for (let i = 0; i < this.spaceObjects.length; i++) {
 			let obj = this.spaceObjects[i];
-			this.grid[obj.x][obj.y].contents = obj;
+			let x = this.centerOfTheUniverse(obj.x, this.ship.x, this.x);
+			let y = this.centerOfTheUniverse(obj.y, this.ship.y, this.y);
+			this.grid[x][y].contents = obj;
 		}
+	}
+
+	centerOfTheUniverse(value, offset, limit) {
+		return this.wraparound(value - offset - Math.ceil(limit / 2), limit);
+	}
+
+	wraparound(value, limit) {
+		if (value >= limit) {
+			return this.wraparound(value - limit, limit);
+		}
+		if (value < 0) {
+			return this.wraparound(limit + value, limit);
+		}
+		return value;
 	}
 
 }
