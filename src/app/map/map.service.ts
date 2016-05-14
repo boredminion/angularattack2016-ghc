@@ -22,7 +22,7 @@ export class Action implements IAction {
 	constructor(label: string, action: any) {
 		this.label = label;
 		this.action = action;
-		this.time = 5;
+		this.time = 2;
 		let interval = setInterval(() => {
 			if (this.time > 0) {
 				this.time--;
@@ -166,30 +166,46 @@ export class MapService {
 
 	actionMoveForward() {
 		if (this.currentAction) {
-			this.currentAction.active = false;
+			if (this.currentAction.label !== 'Move Forward') {
+				this.currentAction.active = false;
+			}
 		}
-		this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
+		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Move Forward')) {
+			this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
+		}
 	}
 
 	actionRotateLeft() {
 		if (this.currentAction) {
-			this.currentAction.active = false;
+			if (this.currentAction.label !== 'Rotate Left') {
+				this.currentAction.active = false;
+			}
 		}
-		this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
+		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Rotate Left')) {
+			this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
+		}
 	}
 
 	actionRotateRight() {
 		if (this.currentAction) {
-			this.currentAction.active = false;
+			if (this.currentAction.label !== 'Rotate Right') {
+				this.currentAction.active = false;
+			}
 		}
-		this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
+		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Rotate Right')) {
+			this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
+		}
 	}
 
 	actionFireWeapon() {
 		if (this.currentAction) {
-			this.currentAction.active = false;
+			if (this.currentAction.label !== 'Fire') {
+				this.currentAction.active = false;
+			}
 		}
-		this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
+		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Fire')) {
+			this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
+		}
 	}
 
 	keyAction(event: KeyboardEvent) {
