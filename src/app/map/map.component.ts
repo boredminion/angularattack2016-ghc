@@ -8,8 +8,7 @@ import {MapService} from './map.service';
 	moduleId: module.id,
 	selector: 'app-map',
 	templateUrl: 'map.component.html',
-	styleUrls: ['map.component.css'],
-	host: { '(window:keydown)': 'keyAction($event)' },
+	styleUrls: ['map.component.css']
 })
 export class MapComponent implements OnInit {
 	grid: Cell[][] = [];
@@ -19,10 +18,6 @@ export class MapComponent implements OnInit {
 	 }
 
 	ngOnInit() {
-	}
-
-	keyAction($event) {
-		this.mapService.keyAction($event);
 	}
 
 }

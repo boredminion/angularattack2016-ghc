@@ -1,0 +1,38 @@
+<div (window.keydown)="keyAction($event);">
+  <div class="row">
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block" (click)="mapService.actionRotateLeft()">Left</button>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block" (click)="mapService.actionMoveForward()">Fwd</button>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block" (click)="mapService.actionRotateRight()">Right</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block"></button>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block"></button>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block"></button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block"></button>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block"></button>
+    </div>
+    <div class="col-xs-4">
+      <button class="btn btn-secondary btn-block" (click)="mapService.actionFireWeapon()">Fire</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">Next Action: {{(mapService.nextAction$ | async)?.label}} in... {{(mapService.nextAction$ | async)?.time}}</div>
+  </div>
+</div>
