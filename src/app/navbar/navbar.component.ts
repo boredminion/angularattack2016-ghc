@@ -1,7 +1,9 @@
 import {Component, OnInit, ChangeDetectionStrategy, EventEmitter, Input, Output} from '@angular/core';
+import {ROUTER_DIRECTIVES} from '@angular/router';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
+  directives: [ROUTER_DIRECTIVES],
   moduleId: module.id,
   selector: 'app-navbar',
   templateUrl: 'navbar.component.html',

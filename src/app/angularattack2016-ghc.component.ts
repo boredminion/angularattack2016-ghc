@@ -4,6 +4,9 @@ import {NavbarComponent} from './navbar';
 import {WelcomeComponent} from './welcome';
 import {MessagesComponent} from './messages';
 import {MapComponent} from './map';
+import {ShipyardComponent} from './shipyard';
+import {AdminComponent} from './admin';
+import {ScoresComponent} from './scores';
 import {AuthService, UserService} from './shared';
 
 @Component({
@@ -16,7 +19,8 @@ import {AuthService, UserService} from './shared';
 
 @Routes([
   {path: '/', component: WelcomeComponent}, {path: '/chat', component: MessagesComponent},
-  {path: '/map', component: MapComponent}
+  {path: '/map', component: MapComponent}, {path: '/shipyard', component: ShipyardComponent},
+  {path: '/admin', component: AdminComponent}, {path: '/scores', component: ScoresComponent}
 ])
 
 export class Angularattack2016GhcAppComponent implements OnInit {
