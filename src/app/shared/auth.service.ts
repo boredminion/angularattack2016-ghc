@@ -23,7 +23,7 @@ export class AuthService {
   signInWithGithub(): Promise<FirebaseAuthState> {
     // signin doesn't set the user online, and can't use userService in here because of circular
     // dependency
-    // sign the user online via fireslack2.component.ts (window refresh)
+    // sign the user online via angularattack2016-ghc.component.ts (window refresh)
     return this.auth$.login({provider: AuthProviders.Github});
   }
 

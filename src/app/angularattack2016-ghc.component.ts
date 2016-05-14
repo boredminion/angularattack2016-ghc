@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { ROUTER_DIRECTIVES, Router, Routes } from '@angular/router';
 import {NavbarComponent} from './navbar';
 import {WelcomeComponent} from './welcome';
-import {AuthService} from './shared';
+import {AuthService, UserService} from './shared';
 
 @Component({
   moduleId: module.id,
@@ -19,7 +19,7 @@ import {AuthService} from './shared';
 export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private userService: UserService, private router: Router) {}
   
   ngOnInit() {
     if (this.auth.authenticated) {
@@ -30,6 +30,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
   }
 
   signOut(): void {
+    this.userService.setOffline();
     this.auth.signOut();
     window.location.replace('/');
   }
@@ -37,6 +38,9 @@ export class Angularattack2016GhcAppComponent implements OnInit {
   signInWithGithub(): void {
     this.auth.signInWithGithub().then(
         (value) => {
+          // on fulfilled
+          // this.userService.setOnline(); // this didn't work, refreshing the page sets a user
+          // online though
           window.location.replace('/');
         },
         (err) => {
