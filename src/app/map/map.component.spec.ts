@@ -2,23 +2,22 @@ import {beforeEach, beforeEachProviders, describe, expect, it, inject,} from '@a
 import {ComponentFixture, TestComponentBuilder} from '@angular/compiler/testing';
 import {Component} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {NavbarComponent} from './navbar.component';
+import {MapComponent} from './map.component';
 
-describe('Component: Navbar', () => {
+describe('Component: Map', () => {
   let builder: TestComponentBuilder;
 
-  beforeEachProviders(() => [NavbarComponent]);
+  beforeEachProviders(() => [MapComponent]);
   beforeEach(
       inject([TestComponentBuilder], function(tcb: TestComponentBuilder) { builder = tcb; }));
 
-  it('should inject the component', inject([NavbarComponent], (component: NavbarComponent) => {
-       expect(component).toBeTruthy();
-     }));
+  it('should inject the component',
+     inject([MapComponent], (component: MapComponent) => { expect(component).toBeTruthy(); }));
 
   it('should create the component', inject([], () => {
-       return builder.createAsync(NavbarComponentTestController)
+       return builder.createAsync(MapComponentTestController)
            .then((fixture: ComponentFixture<any>) => {
-             let query = fixture.debugElement.query(By.directive(NavbarComponent));
+             let query = fixture.debugElement.query(By.directive(MapComponent));
              expect(query).toBeTruthy();
              expect(query.componentInstance).toBeTruthy();
            });
@@ -28,9 +27,9 @@ describe('Component: Navbar', () => {
 @Component({
   selector: 'test',
   template: `
-    <app-navbar></app-navbar>
+    <app-map></app-map>
   `,
-  directives: [NavbarComponent]
+  directives: [MapComponent]
 })
-class NavbarComponentTestController {
+class MapComponentTestController {
 }

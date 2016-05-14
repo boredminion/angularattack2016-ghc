@@ -12,16 +12,12 @@ export class MessagesService {
   constructor(private af: AngularFire, private authService: AuthService) {}
 
   getMessages(): void {
-    this.messages$ =
-        this.af.database.list('/messages') as FirebaseListObservable<IMessage[]>;
-    this.limitedMessages$ =
-        this.af.database.list('/messages', {query: {limitToLast: 20}}) as FirebaseListObservable<IMessage[]>;
+    this.messages$ = this.af.database.list('/messages') as FirebaseListObservable<IMessage[]>;
+    this.limitedMessages$ = this.af.database.list('/messages', {query: {limitToLast: 20}}) as FirebaseListObservable<IMessage[]>;
   }
 
-  removeMessages(): void {
-    this.af.database.list(`/messages`).remove();
-  }
-  
+  removeMessages(): void { this.af.database.list(`/messages`).remove(); }
+
   sendMessage(text: string): Promise<any> {
     return this.messages$.push(new Message(text, this.authService.username, this.authService.id));
   }

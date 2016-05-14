@@ -34,12 +34,7 @@ export class UserService {
   constructor(af: AngularFire, auth: AuthService, @Inject(FirebaseRef) ref: Firebase) {
     this.af = af;
     af.database.list(`/users`).subscribe(
-      data => {
-        this.users = data;
-      },
-      err => console.log(err),
-      () => console.log('done')
-    );
+        data => { this.users = data; }, err => console.log(err), () => console.log('done'));
     this.auth = auth;
     this.currentUser = this.af.database.object(`/users/` + this.auth.id);
     this.online = af.database.list('/users/' + this.auth.id + '/online');
@@ -60,22 +55,16 @@ export class UserService {
     this.onlineItemRef.onDisconnect().remove();
     this.onlineItemRef.set(true);
   }
-  
-  setOffline() {
-    this.onlineItemRef.remove();
-  }
-  
-  getUser(uid: string) {
-    return this.af.database.object(`/users/`+ uid);
-  }
-  
+
+  setOffline() { this.onlineItemRef.remove(); }
+
+  getUser(uid: string) { return this.af.database.object(`/users/` + uid); }
+
   getDisplayName(uid: string) {
-    let user = this.users.find((user) => {
-      return user.$key === uid;
-    }); 
+    let user = this.users.find((user) => { return user.$key === uid; });
     return user ? user.displayName : null;
   }
-  
+
   setDisplayName(newDisplayName: string) {
     let currentUser: User = new User(newDisplayName);
     this.af.database.object(`/users/` + this.auth.id).set(currentUser);

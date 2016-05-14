@@ -22,7 +22,7 @@ export class AuthRouteService {
     if (injector) appInjector = injector;
     return appInjector;
   }
-  
+
   static requireAuth(): boolean {
     const {auth, router} = AuthRouteService.dependencies();
     if (!auth.authenticated) router.navigate(['/']);

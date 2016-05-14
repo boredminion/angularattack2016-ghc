@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import { ROUTER_DIRECTIVES, Router, Routes } from '@angular/router';
+import {ROUTER_DIRECTIVES, Router, Routes} from '@angular/router';
 import {NavbarComponent} from './navbar';
 import {WelcomeComponent} from './welcome';
 import {MessagesComponent} from './messages';
+import {MapComponent} from './map';
 import {AuthService, UserService} from './shared';
 
 @Component({
@@ -14,18 +15,19 @@ import {AuthService, UserService} from './shared';
 })
 
 @Routes([
-  {path: '/', component: WelcomeComponent},
-  {path: '/chat', component: MessagesComponent}
+  {path: '/', component: WelcomeComponent}, {path: '/chat', component: MessagesComponent},
+  {path: '/map', component: MapComponent}
 ])
 
 export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
 
-  constructor(private auth: AuthService, private userService: UserService, private router: Router) {}
-  
+  constructor(private auth: AuthService, private userService: UserService, private router: Router) {
+  }
+
   ngOnInit() {
     if (this.auth.authenticated) {
-      this.router.navigate(['/chat']);
+      this.router.navigate(['/map']);
     } else {
       this.router.navigate(['/']);
     }

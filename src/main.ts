@@ -1,7 +1,7 @@
-import { bootstrap } from '@angular/platform-browser-dynamic';
+import {bootstrap} from '@angular/platform-browser-dynamic';
 import {ROUTER_PROVIDERS} from '@angular/router';
-import { ComponentRef, enableProdMode, provide } from '@angular/core';
-import { Angularattack2016GhcAppComponent, environment } from './app/';
+import {ComponentRef, enableProdMode, provide} from '@angular/core';
+import {Angularattack2016GhcAppComponent, environment} from './app/';
 import {FIREBASE_APP_PROVIDERS} from './app/firebase';
 import {AuthService, AuthRouteService, AUTH_PROVIDERS, UserService, USER_PROVIDERS} from './app/shared';
 import {MESSAGES_PROVIDERS} from './app/messages';

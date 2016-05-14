@@ -1,0 +1,14 @@
+<div class="container" (window.keydown)="keyAction($event);">
+  <div class="row">
+    <div class="col-sm-9 starmap">
+      <div class="container">
+        <div class="row" *ngFor="let row of grid">
+          <app-cell *ngFor="let cell of row" [cell]="cell"></app-cell>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <app-messages></app-messages>
+    </div>
+  </div>
+</div>
