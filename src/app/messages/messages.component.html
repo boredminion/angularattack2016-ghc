@@ -1,6 +1,6 @@
-<div class="tab-content">
+<div class="tab-content messages">
   <div class="text-md-left" *ngFor="let message of messages">
-    {{message.author}}: {{message.text}}
+    {{getDisplayName(message)}}: {{message.text}}
   </div>
   <div class="input-group">
     <input type="text" class="form-control" autocomplete="off" autofocus required placeholder="Your chat..." [(ngModel)]="messageText" (keydown.enter)="sendMessage(messageText, channel)" (keydown)="$event.stopPropagation();">

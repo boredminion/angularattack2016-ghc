@@ -27,4 +27,9 @@ export class MessagesComponent implements OnInit {
     this.messageService.sendMessage(messageText);
     this.messageText = '';
   }
+  
+  getDisplayName(message: IMessage) {
+    let displayName = this.userService.getDisplayName(message.uid); 
+    return displayName ? displayName : message.author;
+  }
 }

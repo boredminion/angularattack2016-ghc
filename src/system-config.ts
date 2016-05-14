@@ -32,6 +32,11 @@ const barrels: string[] = [
   'app', 'app/shared', 'app/navbar', 'app/welcome', 'app/users', 'app/messages', 'app/map',
   'app/cell',
   'app/ship',
+  'app/scores',
+  'app/shipyard',
+  'app/admin',
+  'app/users',
+  'app/sidebar',
   /** @cli-barrel */
 ];
 

@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {CellComponent, Cell} from '../cell';
-import {MessagesComponent} from '../messages';
+import {SidebarComponent} from '../sidebar';
 import {MapService} from './map.service';
 
 @Component({
-	directives: [CellComponent, MessagesComponent],
+	directives: [CellComponent, SidebarComponent],
 	moduleId: module.id,
 	selector: 'app-map',
 	templateUrl: 'map.component.html',
