@@ -11,6 +11,8 @@ export class MapService {
 	// map$
 	x: number = 9; //height of grid
 	y: number = 11; //width of grid
+	extent: number = 100; //max dimension of the map
+
 	ship: Ship;
 	grid$: Observable<Cell[][]>;
 	gridObserver: Observer<Cell[][]>;
@@ -131,7 +133,10 @@ export class MapService {
 	}
 
 	populateGrid() {
-		this.grid = [[], [], [], [], [], [], [], [], []];
+		this.grid = [];
+		for (let i = 0; i < this.x; i++) {
+			this.grid.push([]);
+		}
 		for (let i = 0; i < this.x; i++) {
 			for (let j = 0; j < this.y; j++) {
 				this.grid[i][j] = new Cell(i, j);
