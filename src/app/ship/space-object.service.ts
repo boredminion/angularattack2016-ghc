@@ -8,11 +8,9 @@ import {AuthService} from '../shared/auth.service';
 export class SpaceObjectService {
 
 	spaceObjects$: FirebaseListObservable<ISpaceObject[]>;
-	myShip$: FirebaseListObservable<Ship[]>;
 
 	constructor(private authService: AuthService, private af: AngularFire) {
 		this.spaceObjects$ = this.af.database.list('/space-objects') as FirebaseListObservable<ISpaceObject[]>;
-		this.myShip$ = this.af.database.list('/space-objects', { query: { ownerKey: authService.id } }) as FirebaseListObservable<Ship[]>;
 	}
 
 	createShip(): Ship {

@@ -3,6 +3,7 @@ import {Observable, Observer} from 'rxjs/Rx';
 import {ISpaceObject, Ship, SpaceObjectService} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
+import {AuthService} from '../shared/auth.service';
 
 @Injectable()
 export class MapService {
@@ -16,19 +17,21 @@ export class MapService {
 	grid: Cell[][] = [];
 	spaceObjects: ISpaceObject[] = [];
 
-	constructor(private spaceObjectService: SpaceObjectService) {
+	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		spaceObjectService.spaceObjects$.subscribe(objects => {
-			this.spaceObjects = objects;
-			this.populateGrid()
-		});
-		spaceObjectService.myShip$.subscribe(ships => {
-			if (ships.length) {
-				this.ship = ships[0];
-			} else {
-				this.ship = spaceObjectService.createShip();
+			for (let o = 0; o < objects.length;o++) {
+				let object = objects[o] as Ship;
+				if(object.ownerKey === authService.id) {
+					this.ship = object;
+				}
 			}
-			spaceObjectService.registerShip(this.ship);
+			if(!this.ship) {
+				this.ship = spaceObjectService.createShip();
+				spaceObjectService.registerShip(this.ship);
+			}
+			this.spaceObjects = objects;
+			this.populateGrid();
 		});
 	}
 
