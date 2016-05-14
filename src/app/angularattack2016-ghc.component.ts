@@ -31,7 +31,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
 
   ngOnInit() {
     if (this.auth.authenticated) {
-      this.router.navigate(['/map']);
+      //this.router.navigate(['/map']);
     } else {
       this.router.navigate(['/']);
     }

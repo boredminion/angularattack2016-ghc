@@ -7,14 +7,24 @@ import {AuthService} from '../shared/auth.service';
 @Injectable()
 export class SpaceObjectService {
 
+	spaceObjects: ISpaceObject[] = [];
 	spaceObjects$: FirebaseListObservable<ISpaceObject[]>;
 
 	constructor(private authService: AuthService, private af: AngularFire) {
 		this.spaceObjects$ = this.af.database.list('/space-objects') as FirebaseListObservable<ISpaceObject[]>;
+		this.spaceObjects$.subscribe(objects => {
+			this.spaceObjects = objects;
+		});
 	}
 
 	createShip(): Ship {
 		return new Ship(Direction.Coreward, 4, 5, this.authService.id);
+	}
+	
+	getShip(ownerKey) {
+		return this.spaceObjects.find(spaceObject => {
+			return spaceObject.ownerKey === ownerKey;
+		});
 	}
 
 	moveShip(ship: Ship) {

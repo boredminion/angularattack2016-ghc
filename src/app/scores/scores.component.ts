@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from '../shared';
+import {SpaceObjectService} from '../ship';
 
 @Component({
   moduleId: module.id,
@@ -8,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScoresComponent implements OnInit {
 
-  constructor() {}
+  constructor(private userService: UserService, private shipService: SpaceObjectService) {}
 
   ngOnInit() {
   }

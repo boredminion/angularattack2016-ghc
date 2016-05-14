@@ -1,3 +1,77 @@
-<p>
-  scores works!
-</p>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="card">
+        <div class="card-heading">
+          <h3 class="card-title">Overall High Score</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of userService.users; let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.displayName}}</td>
+                <td>{{shipService.getShip(user.$key)?.currentScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="card">
+        <div class="card-heading">
+          <h3 class="card-title">Most Damaged</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of userService.users; let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.displayName}}</td>
+                <td>{{shipService.getShip(user.$key)?.stolenScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="card">
+        <div class="card-heading">
+          <h3 class="card-title">Most Damage Done</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of userService.users; let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.displayName}}</td>
+                <td>{{shipService.getShip(user.$key)?.totalScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
