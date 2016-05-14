@@ -20,13 +20,13 @@ export class MapService {
 	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		spaceObjectService.spaceObjects$.subscribe(objects => {
-			for (let o = 0; o < objects.length;o++) {
+			for (let o = 0; o < objects.length; o++) {
 				let object = objects[o] as Ship;
-				if(object.ownerKey === authService.id) {
+				if (object.ownerKey === authService.id) {
 					this.ship = object;
 				}
 			}
-			if(!this.ship) {
+			if (!this.ship) {
 				this.ship = spaceObjectService.createShip();
 				spaceObjectService.registerShip(this.ship);
 			}
@@ -35,37 +35,82 @@ export class MapService {
 		});
 	}
 
+	pewPew(x, y) {
+		this.spaceObjects.forEach(function (spaceObject) {
+			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key) {
+				this.ship.currentScore++;
+				this.ship.totalScore++;
+				spaceObject.currentScore = spaceObject.currentScore > 0 ? spaceObject.currentScore - 1 : 0;
+				spaceObject.stolenScore = spaceObject.stolenScore ? spaceObject.stolenScore + 1 : 1;
+				this.spaceObjectService.scoreShip(this.ship);
+				this.spaceObjectService.scoreShip(spaceObject);
+			}
+		}.bind(this));
+	}
+
+	collisionCheck(x, y) {
+		let collide = false;
+		this.spaceObjects.forEach(function (spaceObject) {
+			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key && spaceObject.type === 0) {
+				collide = true;
+			}
+		}.bind(this));
+		return collide;
+	}
+
+	forwardCell() {
+		switch (this.ship.facing) {
+			case 0:
+				return [(this.ship.x - 1), (this.ship.y)];
+			case 1:
+				return [(this.ship.x), (this.ship.y + 1)];
+			case 2:
+				return [(this.ship.x + 1), (this.ship.y)];
+			case 3:
+				return [(this.ship.x), (this.ship.y - 1)];
+		}
+	}
+
 	keyAction(event: KeyboardEvent) {
-		console.log(event.keyCode);
-		if (event.keyCode === 38 || event.keyCode === 87) {
+		if (event.keyCode === 32) {
+			console.log("pew pew");
 			switch (this.ship.facing) {
 				case 0:
-					this.ship.x--;
+					this.pewPew((this.ship.x - 1), (this.ship.y));
 					break;
 				case 1:
-					this.ship.y++;
+					this.pewPew((this.ship.x), (this.ship.y + 1));
 					break;
 				case 2:
-					this.ship.x++;
+					this.pewPew((this.ship.x + 1), (this.ship.y));
 					break;
 				case 3:
-					this.ship.y--;
+					this.pewPew((this.ship.x), (this.ship.y - 1));
 					break;
 			}
-			if (this.ship.x === this.x) {
-				this.ship.x = 0;
-			}
-			if (this.ship.x < 0) {
-				this.ship.x = this.x - 1;
-			}
-			if (this.ship.y === this.y) {
-				this.ship.y = 0;
-			}
-			if (this.ship.y < 0) {
-				this.ship.y = this.y - 1;
-			}
+		}
+		if (event.keyCode === 38 || event.keyCode === 87) {
+			let move = this.forwardCell();
+			if (this.collisionCheck(move[0], move[1])) {
+				console.log("can't move there");
+			} else {
+				this.ship.x = move[0];
+				this.ship.y = move[1];
+				if (this.ship.x === this.x) {
+					this.ship.x = 0;
+				}
+				if (this.ship.x < 0) {
+					this.ship.x = this.x - 1;
+				}
+				if (this.ship.y === this.y) {
+					this.ship.y = 0;
+				}
+				if (this.ship.y < 0) {
+					this.ship.y = this.y - 1;
+				}
 
-			this.populateGrid();
+				this.populateGrid();
+			}
 		}
 		if (event.keyCode === 36 || event.keyCode === 81) {
 			if (this.ship.facing) {

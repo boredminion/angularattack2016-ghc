@@ -6,4 +6,7 @@ export interface ISpaceObject {
 	x: number;
 	y: number;
 	type: SpaceObjectType;
+	currentScore: number;
+	stolenScore: number;
+	totalScore: number;
 }

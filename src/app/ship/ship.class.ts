@@ -8,6 +8,9 @@ export class Ship implements ISpaceObject {
 	type: SpaceObjectType;
 	x: number;
 	y: number;
+	currentScore: number = 0;
+	stolenScore: number = 0;
+	totalScore: number = 0;
 	constructor(dir, x, y, ownerKey) {
 		this.facing = dir;
 		this.x = x;

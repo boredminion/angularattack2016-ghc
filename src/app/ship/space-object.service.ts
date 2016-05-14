@@ -20,6 +20,14 @@ export class SpaceObjectService {
 	moveShip(ship: Ship) {
 		return this.spaceObjects$.update(ship.$key, { facing: ship.facing, x: ship.x, y: ship.y });
 	}
+	
+	scoreShip(ship: Ship) {
+		return this.spaceObjects$.update(ship.$key, {
+			currentScore: ship.currentScore ? ship.currentScore : 0,
+			stolenScore: ship.stolenScore ? ship.stolenScore : 0,
+			totalScore: ship.totalScore ? ship.totalScore : 0
+		});
+	}
 
 	registerObject(obj: ISpaceObject) {
 		// return this.spaceObjects$.push(obj);
