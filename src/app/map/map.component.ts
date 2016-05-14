@@ -9,7 +9,7 @@ import {MapService} from './map.service';
 	selector: 'app-map',
 	templateUrl: 'map.component.html',
 	styleUrls: ['map.component.css'],
-	host: { '(window:keydown)': 'keyAction($event)' },
+	host: { '(window:keydown)': 'keyAction($event)' }
 })
 export class MapComponent implements OnInit {
 	grid: Cell[][] = [];
@@ -21,7 +21,8 @@ export class MapComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	keyAction($event) {
+	keyAction($event: KeyboardEvent) {
+		$event.preventDefault();
 		this.mapService.keyAction($event);
 	}
 
