@@ -5,13 +5,14 @@ import {Angularattack2016GhcAppComponent, environment} from './app/';
 import {FIREBASE_APP_PROVIDERS} from './app/firebase';
 import {AuthService, AuthRouteService, AUTH_PROVIDERS, UserService, USER_PROVIDERS} from './app/shared';
 import {MESSAGES_PROVIDERS} from './app/messages';
+import {MAP_PROVIDERS} from './app/map';
 
 if (environment.production) {
   enableProdMode();
 }
 
 const providers: any[] = [
-  AUTH_PROVIDERS, FIREBASE_APP_PROVIDERS, ROUTER_PROVIDERS, USER_PROVIDERS, MESSAGES_PROVIDERS
+  AUTH_PROVIDERS, FIREBASE_APP_PROVIDERS, ROUTER_PROVIDERS, USER_PROVIDERS, MESSAGES_PROVIDERS, MAP_PROVIDERS
   //, provide(APP_BASE_HREF, {useValue: '/'})
 ];
 

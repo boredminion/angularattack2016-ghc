@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import {ShipComponent} from '../ship';
 
 @Component({
-	directives: [ShipComponent],
+  directives: [ShipComponent],
   moduleId: module.id,
   selector: 'app-cell',
   templateUrl: 'cell.component.html',
@@ -10,10 +10,10 @@ import {ShipComponent} from '../ship';
 })
 export class CellComponent implements OnInit {
 
-	@Input()
-	cell: any;
+  @Input()
+  cell: any;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
   }

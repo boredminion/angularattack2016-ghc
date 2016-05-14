@@ -15,8 +15,8 @@ export class MessagesComponent implements OnInit {
   messages: IMessage[];
 
   constructor(
-      authService: AuthService, private userService: UserService,
-      private messageService: MessagesService) {}
+    authService: AuthService, private userService: UserService,
+    private messageService: MessagesService) { }
 
   ngOnInit() {
     this.messageService.getMessages();
