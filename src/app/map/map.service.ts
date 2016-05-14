@@ -7,9 +7,9 @@ import {Cell} from '../cell';
 import {AuthService} from '../shared/auth.service';
 
 export interface IAction {
-  label: string;
-  action: any;
-  time: any;
+	label: string;
+	action: any;
+	time: any;
 }
 
 export class Action implements IAction {
@@ -17,19 +17,19 @@ export class Action implements IAction {
 	action: any;
 	time: any;
 
-  constructor(label: string, action: any) {
-	  this.label = label;
-	  this.action = action;
-	  this.time = 5;
-	  setInterval(() => {
-		  if (this.time > 0) {
-			  this.time--;
-		  }
-		  if (this.time === 0) {
-			  this.time = -1;
-			  this.action();
-			  this.label = '';
-		  }
+	constructor(label: string, action: any) {
+		this.label = label;
+		this.action = action;
+		this.time = 5;
+		setInterval(() => {
+			if (this.time > 0) {
+				this.time--;
+			}
+			if (this.time === 0) {
+				this.time = -1;
+				this.action();
+				this.label = '';
+			}
 		}, 1000);
 	}
 }
@@ -45,10 +45,9 @@ export class MapService {
 	ship: Ship;
 	grid$: Observable<Cell[][]>;
 	gridObserver: Observer<Cell[][]>;
-	grid: Cell[][] = [];
 	spaceObjects: ISpaceObject[] = [];
 	private _nextActionSource = new Subject<Action>();
-  	nextAction$ = this._nextActionSource.asObservable();
+	nextAction$ = this._nextActionSource.asObservable();
 
 	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
@@ -72,7 +71,7 @@ export class MapService {
 	}
 
 	pewPew(x, y) {
-		this.spaceObjects.forEach(function (spaceObject) {
+		this.spaceObjects.forEach(function(spaceObject) {
 			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key) {
 				this.ship.currentScore++;
 				this.ship.totalScore++;
@@ -86,7 +85,7 @@ export class MapService {
 
 	collisionCheck(x, y) {
 		let collide = false;
-		this.spaceObjects.forEach(function (spaceObject) {
+		this.spaceObjects.forEach(function(spaceObject) {
 			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key && spaceObject.type === 0) {
 				collide = true;
 			}
@@ -114,20 +113,8 @@ export class MapService {
 		} else {
 			this.ship.x = move[0];
 			this.ship.y = move[1];
-			if (this.ship.x === this.x) {
-				this.ship.x = 0;
-			}
-			if (this.ship.x < 0) {
-				this.ship.x = this.x - 1;
-			}
-			if (this.ship.y === this.y) {
-				this.ship.y = 0;
-			}
-			if (this.ship.y < 0) {
-				this.ship.y = this.y - 1;
-			}
-			this.ship.x = this.wraparound(this.ship.x, this.x);
-			this.ship.y = this.wraparound(this.ship.y, this.y);
+			this.ship.x = this.wraparound(this.ship.x, this.extent);
+			this.ship.y = this.wraparound(this.ship.y, this.extent);
 			this.populateGrid();
 		}
 		this.spaceObjectService.moveShip(this.ship);
@@ -168,19 +155,19 @@ export class MapService {
 				break;
 		}
 	}
-	
+
 	actionMoveForward() {
 		this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
 	}
-	
+
 	actionRotateLeft() {
 		this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
 	}
-	
+
 	actionRotateRight() {
 		this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
 	}
-	
+
 	actionFireWeapon() {
 		this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
 	}
@@ -201,30 +188,38 @@ export class MapService {
 	}
 
 	populateGrid() {
-		this.grid = [];
-		for (let i = 0; i < this.x; i++) {
-			this.grid.push([]);
+		let visibleGrid = [];
+		let fullGrid = [];
+		for (let i = 0; i < this.extent; i++) {
+			fullGrid.push([]);
 		}
 		for (let i = 0; i < this.x; i++) {
-			for (let j = 0; j < this.y; j++) {
-				this.grid[i][j] = new Cell(i, j);
+			visibleGrid.push([]);
+		}
+		for (let i = 0; i < this.extent; i++) {
+			for (let j = 0; j < this.extent; j++) {
+				fullGrid[i][j] = new Cell(i, j);
 			}
 		}
-		this.addObjects();
-		this.gridObserver.next(this.grid);
+		fullGrid = this.addObjects(fullGrid);
+		let visibleX = this.ship.x + 1 - Math.floor(this.x / 2);
+		let visibleY = this.ship.y + 1 - Math.floor(this.y / 2);
+		for (let i = 0; i < this.x; i++) {
+			for (let j = 0; j < this.x; j++) {
+				let gridX = this.wraparound(i + visibleX, this.extent);
+				let gridY = this.wraparound(j + visibleY, this.extent);
+				visibleGrid[i][j] = fullGrid[gridX][gridY];
+			}
+		}
+		this.gridObserver.next(visibleGrid);
 	}
 
-	addObjects() {
+	addObjects(grid) {
 		for (let i = 0; i < this.spaceObjects.length; i++) {
 			let obj = this.spaceObjects[i];
-			let x = this.centerOfTheUniverse(obj.x, this.ship.x, this.x);
-			let y = this.centerOfTheUniverse(obj.y, this.ship.y, this.y);
-			this.grid[x][y].contents = obj;
+			grid[obj.x][obj.y].contents = obj;
 		}
-	}
-
-	centerOfTheUniverse(value, offset, limit) {
-		return this.wraparound(value - offset - Math.ceil(limit / 2), limit);
+		return grid;
 	}
 
 	wraparound(value, limit) {
