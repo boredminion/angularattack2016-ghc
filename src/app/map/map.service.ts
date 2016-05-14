@@ -7,10 +7,10 @@ import {Cell} from '../cell';
 import {AuthService} from '../shared/auth.service';
 
 export interface IAction {
-  label: string;
-  action: any;
-  active: boolean;
-  time: any;
+	label: string;
+	action: any;
+	active: boolean;
+	time: any;
 }
 
 export class Action implements IAction {
@@ -19,24 +19,24 @@ export class Action implements IAction {
 	active: boolean = true;
 	time: any;
 
-  constructor(label: string, action: any) {
-	  this.label = label;
-	  this.action = action;
-	  this.time = 5;
-	  let interval = setInterval(() => {
-		  if (this.time > 0) {
-			  this.time--;
-		  }
-		  if (this.active === false) {
-			  clearInterval(interval);
-		  }
-		  if (this.time === 0 && this.active === true) {
-			  this.time = '';
-			  this.action();
-			  this.label = '';
-			  this.active = false;
-			  clearInterval(interval);
-		  }
+	constructor(label: string, action: any) {
+		this.label = label;
+		this.action = action;
+		this.time = 5;
+		let interval = setInterval(() => {
+			if (this.time > 0) {
+				this.time--;
+			}
+			if (this.active === false) {
+				clearInterval(interval);
+			}
+			if (this.time === 0 && this.active === true) {
+				this.time = '';
+				this.action();
+				this.label = '';
+				this.active = false;
+				clearInterval(interval);
+			}
 		}, 1000);
 	}
 }
@@ -47,13 +47,14 @@ export class MapService {
 	// map$
 	x: number = 9; //height of grid
 	y: number = 11; //width of grid
+	extent: number = 100; //max dimension of the map
+
 	ship: Ship;
 	grid$: Observable<Cell[][]>;
 	gridObserver: Observer<Cell[][]>;
-	grid: Cell[][] = [];
 	spaceObjects: ISpaceObject[] = [];
 	private _nextActionSource = new Subject<Action>();
-  	nextAction$ = this._nextActionSource.asObservable();
+	nextAction$ = this._nextActionSource.asObservable();
 	currentAction: Action;
 
 	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
@@ -78,7 +79,7 @@ export class MapService {
 	}
 
 	pewPew(x, y) {
-		this.spaceObjects.forEach(function (spaceObject) {
+		this.spaceObjects.forEach(function(spaceObject) {
 			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key) {
 				this.ship.currentScore++;
 				this.ship.totalScore++;
@@ -92,7 +93,7 @@ export class MapService {
 
 	collisionCheck(x, y) {
 		let collide = false;
-		this.spaceObjects.forEach(function (spaceObject) {
+		this.spaceObjects.forEach(function(spaceObject) {
 			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key && spaceObject.type === 0) {
 				collide = true;
 			}
@@ -120,20 +121,8 @@ export class MapService {
 		} else {
 			this.ship.x = move[0];
 			this.ship.y = move[1];
-			if (this.ship.x === this.x) {
-				this.ship.x = 0;
-			}
-			if (this.ship.x < 0) {
-				this.ship.x = this.x - 1;
-			}
-			if (this.ship.y === this.y) {
-				this.ship.y = 0;
-			}
-			if (this.ship.y < 0) {
-				this.ship.y = this.y - 1;
-			}
-			this.ship.x = this.wraparound(this.ship.x, this.x);
-			this.ship.y = this.wraparound(this.ship.y, this.y);
+			this.ship.x = this.wraparound(this.ship.x, this.extent);
+			this.ship.y = this.wraparound(this.ship.y, this.extent);
 			this.populateGrid();
 		}
 		this.spaceObjectService.moveShip(this.ship);
@@ -174,31 +163,31 @@ export class MapService {
 				break;
 		}
 	}
-	
+
 	actionMoveForward() {
 		if (this.currentAction) {
-			this.currentAction.active = false;	
+			this.currentAction.active = false;
 		}
 		this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
 	}
-	
+
 	actionRotateLeft() {
 		if (this.currentAction) {
-			this.currentAction.active = false;	
+			this.currentAction.active = false;
 		}
 		this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
 	}
-	
+
 	actionRotateRight() {
 		if (this.currentAction) {
-			this.currentAction.active = false;	
+			this.currentAction.active = false;
 		}
 		this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
 	}
-	
+
 	actionFireWeapon() {
 		if (this.currentAction) {
-			this.currentAction.active = false;	
+			this.currentAction.active = false;
 		}
 		this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
 	}
@@ -219,27 +208,38 @@ export class MapService {
 	}
 
 	populateGrid() {
-		this.grid = [[], [], [], [], [], [], [], [], []];
+		let visibleGrid = [];
+		let fullGrid = [];
+		for (let i = 0; i < this.extent; i++) {
+			fullGrid.push([]);
+		}
 		for (let i = 0; i < this.x; i++) {
-			for (let j = 0; j < this.y; j++) {
-				this.grid[i][j] = new Cell(i, j);
+			visibleGrid.push([]);
+		}
+		for (let i = 0; i < this.extent; i++) {
+			for (let j = 0; j < this.extent; j++) {
+				fullGrid[i][j] = new Cell(i, j);
 			}
 		}
-		this.addObjects();
-		this.gridObserver.next(this.grid);
+		fullGrid = this.addObjects(fullGrid);
+		let visibleX = this.ship.x + 1 - Math.floor(this.x / 2);
+		let visibleY = this.ship.y + 1 - Math.floor(this.y / 2);
+		for (let i = 0; i < this.x; i++) {
+			for (let j = 0; j < this.x; j++) {
+				let gridX = this.wraparound(i + visibleX, this.extent);
+				let gridY = this.wraparound(j + visibleY, this.extent);
+				visibleGrid[i][j] = fullGrid[gridX][gridY];
+			}
+		}
+		this.gridObserver.next(visibleGrid);
 	}
 
-	addObjects() {
+	addObjects(grid) {
 		for (let i = 0; i < this.spaceObjects.length; i++) {
 			let obj = this.spaceObjects[i];
-			let x = this.centerOfTheUniverse(obj.x, this.ship.x, this.x);
-			let y = this.centerOfTheUniverse(obj.y, this.ship.y, this.y);
-			this.grid[x][y].contents = obj;
+			grid[obj.x][obj.y].contents = obj;
 		}
-	}
-
-	centerOfTheUniverse(value, offset, limit) {
-		return this.wraparound(value - offset - Math.ceil(limit / 2), limit);
+		return grid;
 	}
 
 	wraparound(value, limit) {
