@@ -1,4 +1,5 @@
-<app-navbar></app-navbar>
+<app-navbar [authenticated]="auth.authenticated"
+  (signOut)="signOut()" (signInWithGithub)="signInWithGithub()"></app-navbar>
 <div class="container-fluid main-container">
   <router-outlet></router-outlet>
 </div>
