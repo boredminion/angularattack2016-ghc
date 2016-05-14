@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { ROUTER_DIRECTIVES, Router, Routes } from '@angular/router';
 import {NavbarComponent} from './navbar';
 import {WelcomeComponent} from './welcome';
+import {MessagesComponent} from './messages';
 import {AuthService, UserService} from './shared';
 
 @Component({
@@ -13,7 +14,8 @@ import {AuthService, UserService} from './shared';
 })
 
 @Routes([
-  {path: '/', component: WelcomeComponent}
+  {path: '/', component: WelcomeComponent},
+  {path: '/chat', component: MessagesComponent}
 ])
 
 export class Angularattack2016GhcAppComponent implements OnInit {
@@ -23,7 +25,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
   
   ngOnInit() {
     if (this.auth.authenticated) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/chat']);
     } else {
       this.router.navigate(['/']);
     }
@@ -41,7 +43,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
           // on fulfilled
           // this.userService.setOnline(); // this didn't work, refreshing the page sets a user
           // online though
-          window.location.replace('/');
+          window.location.replace('/chat');
         },
         (err) => {
             // on rejected
