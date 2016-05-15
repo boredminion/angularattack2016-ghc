@@ -11,11 +11,13 @@ export class Explosion implements ISpaceObject {
 	image: string;
 	ownerKey: string;
 	time: number;
-	constructor(x, y, image) {
+	facing: number = 0;
+	constructor(x, y, image, facing) {
 		this.x = x;
 		this.y = y;
 		this.type = SpaceObjectType.Explosion;
 		this.image = image;
 		this.time = Date.now();
+		this.facing = facing;
 	}
 }

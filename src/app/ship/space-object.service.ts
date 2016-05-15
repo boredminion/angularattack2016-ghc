@@ -65,12 +65,12 @@ export class SpaceObjectService {
 		this.registerObject(new Planet(x, y, image));
 	}
 
-	createBoom(x, y, hit): void {
+	createBoom(x, y, hit, facing): void {
 		let image = 'fireworks6-150x150.png';
 		if (hit) {
 			image = 'explosion5-150x150.png';
 		}
-		this.registerObject(new Explosion(x, y, image)).then((boom: any) => {
+		this.registerObject(new Explosion(x, y, image, facing)).then((boom: any) => {
 			setTimeout(() => {
 				this.spaceObjects$.remove(boom.path.u[1]);
 			}, this.boomDuration);

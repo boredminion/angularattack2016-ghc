@@ -266,7 +266,7 @@ export class MapService {
 					if (!aiShip) {
 						this.notification.pop('success', 'Hit!', 'You hit ' + ship.shipName + ' for ' + weaponDamage + ' points!');
 					}
-					this.spaceObjectService.createBoom(x, y, true);
+					this.spaceObjectService.createBoom(x, y, true, ship.facing);
 				}
 			}.bind(this));
 			if (!hit) {
@@ -274,7 +274,6 @@ export class MapService {
 					if (object.type === SpaceObjectType.AIShip) {
 						let ship = object as AIShip;
 						if (ship.x === x && ship.y === y) {
-							console.log(ship);
 							ship.health = ship.health ? ship.health - weaponDamage : shipHealth - weaponDamage;
 							if (!aiShip) {
 								this.ship.currentScore = this.ship.currentScore + weaponDamage;
@@ -286,13 +285,13 @@ export class MapService {
 							if (!aiShip) {
 								this.notification.pop('success', 'Hit!', 'You hit a drone for ' + weaponDamage + ' points!');
 							}
-							this.spaceObjectService.createBoom(x, y, true);
+							this.spaceObjectService.createBoom(x, y, true, ship.facing);
 						}
 					}
 				}.bind(this));
 			}
 			if (!hit) {
-				this.spaceObjectService.createBoom(x, y, false);
+				this.spaceObjectService.createBoom(x, y, false, 0);
 			}
 		}
 	}
@@ -329,7 +328,6 @@ export class MapService {
 		let movingShip = ship || this.ship;
 		let move = this.forwardCell(movingShip);
 		if (this.collisionCheck(move[0], move[1])) {
-			console.log("can't move there");
 			return;
 		}
 		movingShip.x = move[0];

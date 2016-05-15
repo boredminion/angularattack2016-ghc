@@ -29,7 +29,6 @@ export class NotificationsService {
   }
   
   pop(type: string, title: string, message: string) {
-    console.log(title);
     this._notification.next(new Notification(type, title, message));
   }
 
