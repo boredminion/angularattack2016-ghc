@@ -3,6 +3,7 @@ import {UserService} from './user.service';
 import {GlobalService} from './global.service';
 import {NotificationsService} from './notifications.service';
 import {Direction} from '../map';
+import {Upgrade} from '../ship';
 
 export {AuthService};
 export {AuthRouteService} from './auth-route.service';
@@ -31,6 +32,8 @@ export interface IUser {
 	stolenScore: number;
 	totalScore: number;
 	admin: boolean;
+	upgrades: Upgrade[];
+	
 }
 
 export class User implements IUser {
@@ -51,6 +54,7 @@ export class User implements IUser {
 	weaponDamage: number = 0;
 	admin: boolean = false;
 	image: string;
+	upgrades: Upgrade[] = [];
 	constructor(shipName: string, image: string) {
     this.shipName = shipName;
     this.image = image;

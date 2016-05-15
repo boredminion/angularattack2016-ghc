@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable, Observer} from 'rxjs/Rx';
 import {Subject}    from 'rxjs/Subject';
-import {ISpaceObject, SpaceObjectService, SpaceObjectType, AIShip} from '../ship';
+import {ISpaceObject, SpaceObjectService, SpaceObjectType, AIShip, Upgrade, UpgradeType} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
 import {UserService, User, GlobalService, Settings, NotificationsService} from '../shared';
@@ -61,12 +61,15 @@ export class MapService {
 	currentAction: Action;
 	transitions$: Observable<string>;
 	transitionsObserver: Observer<string>;
+	upgrades: Upgrade[];
 
 	constructor(
 		private userService: UserService,
 		private spaceObjectService: SpaceObjectService,
 		private globalService: GlobalService,
 		private notification: NotificationsService) {
+			
+		globalService.upgrades.subscribe(upgrades => this.upgrades = upgrades);
 
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		this.grid$.subscribe(grid => {
@@ -199,7 +202,31 @@ export class MapService {
 
 	pewPew(aiShip) {
 		let shootingShip = aiShip || this.ship;
-		for (let i = 1; i <= this.settings.baseWeaponRange; i++) {
+		let weaponRange: number = this.settings.baseWeaponRange;
+		let weaponDamage: number = this.settings.baseWeaponDamage;
+		let shipHealth: number = this.settings.baseShipHealth;
+		if (!aiShip) {
+			let shipUpgrades = Object.keys(this.ship.upgrades).map(key => {
+				return this.ship.upgrades[key];
+			});
+			shipUpgrades = shipUpgrades.map(key => {
+				return this.upgrades.find(upgrade => {
+					return upgrade.$key === key;
+				});
+			});
+			shipUpgrades.forEach(upgrade => {
+				if (upgrade.type === UpgradeType.Range) {
+					weaponRange += upgrade.value;
+				}
+				if (upgrade.type === UpgradeType.Damage) {
+					weaponDamage += upgrade.value;
+				}
+				if (upgrade.type === UpgradeType.Armor) {
+					shipHealth += upgrade.value;
+				}
+			});
+		}
+		for (let i = 1; i <= weaponRange; i++) {
 			let x = 0;
 			let y = 0;
 			switch (shootingShip.facing) {
@@ -223,38 +250,43 @@ export class MapService {
 			let hit = false;
 			this.ships.forEach(function(ship: User) {
 				if (ship.x === x && ship.y === y) {
-					ship.currentScore = ship.currentScore - this.settings.baseWeaponDamage > 0 ? ship.currentScore - this.settings.baseWeaponDamage : 0;
-					ship.stolenScore = ship.stolenScore ? ship.stolenScore + this.settings.baseWeaponDamage : this.settings.baseWeaponDamage;
-					ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
+					ship.currentScore = ship.currentScore - weaponDamage > 0 ? ship.currentScore - weaponDamage : 0;
+					ship.stolenScore = ship.stolenScore ? ship.stolenScore + weaponDamage : weaponDamage;
+					ship.health = ship.health ? ship.health - weaponDamage : shipHealth - weaponDamage;
 					if (!aiShip) {
-						this.ship.currentScore++;
-						this.ship.totalScore++;
+						this.ship.currentScore = this.ship.currentScore + weaponDamage;
+						this.ship.totalScore = this.ship.totalScore + weaponDamage;
 						this.userService.scoreOwnShip(this.ship);
 						this.userService.scoreShip(ship);
 					}
 					hit = true;
-					console.log(aiShip);
 					if (!aiShip) {
-						this.notification.pop('success', 'Hit!', 'You hit ' + ship.shipName + ' for ' + this.settings.baseWeaponDamage + ' points!');
+						this.notification.pop('success', 'Hit!', 'You hit ' + ship.shipName + ' for ' + weaponDamage + ' points!');
 					}
 					this.spaceObjectService.createBoom(x, y, true);
 				}
 			}.bind(this));
 			if (!hit) {
-				this.spaceObjects.forEach(object => {
-					if (object.type === SpaceObjectType.AIShip && object.x === x && object.y === y) {
+				this.spaceObjects.forEach(function(object) {
+					if (object.type === SpaceObjectType.AIShip) {
 						let ship = object as AIShip;
-						ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
-						if (!aiShip) {
-							this.ship.currentScore++;
-							this.ship.totalScore++;
-							this.userService.scoreOwnShip(this.ship);
+						if (ship.x === x && ship.y === y) {
+							
+							ship.health = ship.health ? ship.health - weaponDamage : shipHealth - weaponDamage;
+							if (!aiShip) {
+								this.ship.currentScore = this.ship.currentScore + weaponDamage;
+								this.ship.totalScore = this.ship.totalScore + weaponDamage;
+								this.userService.scoreOwnShip(this.ship);
+							}
+							this.spaceObjectService.damage(ship);
+							hit = true;
+							if (!aiShip) {
+								this.notification.pop('success', 'Hit!', 'You hit a drone for ' + weaponDamage + ' points!');
+							}
+							this.spaceObjectService.createBoom(x, y, true);
 						}
-						this.spaceObjectService.damage(ship);
-						hit = true;
-						this.spaceObjectService.createBoom(x, y, true);
 					}
-				});
+				}.bind(this));
 			}
 			if (!hit) {
 				this.spaceObjectService.createBoom(x, y, false);

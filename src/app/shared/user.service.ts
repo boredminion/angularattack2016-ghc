@@ -7,6 +7,7 @@ import {AuthService, IUser, User} from './';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import {Direction} from '../map';
+import {Upgrade} from '../ship';
 import {GlobalService} from './global.service';
 
 @Injectable()
@@ -17,6 +18,7 @@ export class UserService {
   public users$: FirebaseListObservable<IUser[]>;
   public currentUser: FirebaseObjectObservable<IUser>;
   private ship: User;
+  private upgrades$: FirebaseListObservable<Upgrade[]>;
   private af: AngularFire;
   private auth: AuthService;
   private onlineRef: Firebase;
@@ -29,6 +31,7 @@ export class UserService {
         data => { this.users = data; }, err => console.log(err), () => console.log('done'));
     this.auth = auth;
     this.currentUser = this.af.database.object(`/users/` + this.auth.id);
+    this.upgrades$ = this.af.database.list(`/users/` + this.auth.id + `/upgrades`);
     this.currentUser.subscribe(user => {
       this.ship = user;
     });
@@ -113,6 +116,13 @@ export class UserService {
       });
     }
 	}
+  
+  buyUpgrade(upgrade: Upgrade) {
+    this.upgrades$.push(upgrade.$key);
+    return this.currentUser.update({
+      currentScore: this.ship.currentScore - upgrade.cost
+    });
+  }
 
   setShipName(newShipName: string, image: string, x: number, y: number, facing: Direction) {
     let currentUser: User = new User(newShipName || this.auth.username, image || 'spaceship14-240x185.png');

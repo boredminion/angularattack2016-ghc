@@ -31,11 +31,14 @@ import {ToasterContainerComponent, ToasterService} from 'angular2-toaster/angula
 
 export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
+  score: number = 0;
 
   constructor(private notificationsService: NotificationsService, private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
     notificationsService.notification$.subscribe(notification => {
-      console.log(notification);
       this.toasterService.pop(notification.type, notification.title, notification.message);
+    });
+    userService.currentUser.subscribe(user => {
+      this.score = user.currentScore;
     });
   }
 

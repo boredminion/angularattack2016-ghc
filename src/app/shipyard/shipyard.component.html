@@ -8,7 +8,7 @@
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'">{{armor.name}}: {{armor.value}} Armor <span class="pull-right text-muted">${{armor.cost}}</span>
-              <button class="btn btn-success" (click)="buyUpgrade(armor.$key)">Buy</button>
+              <button *ngIf="!userPurchased(armor.$key)" class="btn btn-success" (click)="buyUpgrade(armor)" [disabled]="money < armor.cost">Buy</button>
             </li>
           </ul>
         </div>
@@ -18,7 +18,7 @@
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'">{{damage.name}}: {{damage.value}} Damage <span class="pull-right text-muted">${{damage.cost}}</span>
-              <button class="btn btn-success" (click)="buyUpgrade(damage.$key)">Buy</button>
+              <button *ngIf="!userPurchased(damage.$key)" class="btn btn-success" (click)="buyUpgrade(damage)" [disabled]="money < damage.cost">Buy</button>
             </li>
           </ul>
         </div>
@@ -28,7 +28,7 @@
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'">{{range.name}}: {{range.value}} Distance <span class="pull-right text-muted">${{range.cost}}</span>
-              <button class="btn btn-success" (click)="buyUpgrade(range.$key)">Buy</button>
+              <button *ngIf="!userPurchased(range.$key)" class="btn btn-success" (click)="buyUpgrade(range)" [disabled]="money < range.cost || user">Buy</button>
             </li>
           </ul>
         </div>
