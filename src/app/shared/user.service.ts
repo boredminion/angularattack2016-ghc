@@ -7,7 +7,7 @@ import {AuthService, IUser, User} from './';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import {Direction} from '../map';
-import {Upgrade} from '../ship';
+import {Upgrade, UpgradeType} from '../ship';
 import {GlobalService} from './global.service';
 
 @Injectable()
@@ -105,22 +105,24 @@ export class UserService {
         currentScore: ship.currentScore ? ship.currentScore : 0,
         stolenScore: ship.stolenScore ? ship.stolenScore : 0,
         totalScore: ship.totalScore ? ship.totalScore : 0,
-        health: 100
+        health: this.globalService.globalSettings.baseShipHealth,
+        upgrades: []
       });
     } else {
       return this.users$.update(ship.$key, {
         currentScore: ship.currentScore ? ship.currentScore : 0,
         stolenScore: ship.stolenScore ? ship.stolenScore : 0,
         totalScore: ship.totalScore ? ship.totalScore : 0,
-        health: ship.health ? ship.health : 100
+        health: ship.health ? ship.health : this.globalService.globalSettings.baseShipHealth
       });
     }
 	}
   
   buyUpgrade(upgrade: Upgrade) {
     this.upgrades$.push(upgrade.$key);
-    return this.currentUser.update({
-      currentScore: this.ship.currentScore - upgrade.cost
+    this.currentUser.update({
+      currentScore: this.ship.currentScore - upgrade.cost,
+      health: upgrade.type === UpgradeType.Armor ? this.ship.health += upgrade.value : this.ship.health
     });
   }
 
