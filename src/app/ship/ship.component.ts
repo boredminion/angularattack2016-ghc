@@ -7,15 +7,25 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['ship.component.css']
 })
 export class ShipComponent implements OnInit {
-	@Input()
-	ship: any;
+  @Input()
+  ship: any;
 
-	@Input()
-	transitions: string;
+  @Input()
+  transitions: string;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
+  }
+
+  get classes(): string {
+    let facing = this.ship.facing;
+    let transitions = this.transitions || '';
+    if (facing) {
+    return 'facing-' + facing + ' ' + transitions;
+    } else {
+      return transitions;
+    }
   }
 
 }
