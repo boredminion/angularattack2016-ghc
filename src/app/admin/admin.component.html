@@ -108,8 +108,8 @@
             <h4 class="card-title">Armor Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let armor of globalSettings.upgrades | upgrades:'Armor'">{{armor | json}}
-              <button class="btn btn-danger">Remove</button>
+            <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'">{{armor | json}}
+              <button class="btn btn-danger" (click)="removeUpgrade(armor.$key)">Remove</button>
             </li>
           </ul>
           <div class="card-block">
@@ -133,8 +133,8 @@
             <h4 class="card-title">Damage Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let damage of globalSettings.upgrades | upgrades:'Damage'">{{damage | json}}
-              <button class="btn btn-danger">Remove</button>
+            <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'">{{damage | json}}
+              <button class="btn btn-danger" (click)="removeUpgrade(damage.$key)">Remove</button>
             </li>
           </ul>
           <div class="card-block">
@@ -158,8 +158,8 @@
             <h4 class="card-title">Range Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let range of globalSettings.upgrades | upgrades:'Range'">{{range | json}}
-              <button class="btn btn-danger">Remove</button>
+            <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'">{{range | json}}
+              <button class="btn btn-danger" (click)="removeUpgrade(range.$key)">Remove</button>
             </li>
           </ul>
           <div class="card-block">

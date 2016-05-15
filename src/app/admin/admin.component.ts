@@ -17,12 +17,14 @@ export class AdminComponent implements OnInit {
   aiShips: AIShip[] = [];
   asteroids: Asteroid[] = [];
   planets: Planet[] = [];
+  upgrades: Upgrade[] = [];
   newArmor: Upgrade = new Upgrade('', '', UpgradeType.Armor);
   newDamage: Upgrade = new Upgrade('', '', UpgradeType.Damage);
   newRange: Upgrade = new Upgrade('', '', UpgradeType.Range);
 
   constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService) {
     globalService.globalSettings$.subscribe(settings => this.globalSettings = settings);
+    globalService.upgrades.subscribe(upgrades => this.upgrades = upgrades);
     spaceObjectService.spaceObjects$.subscribe(spaceObjects => {
       this.aiShips = [];
       this.asteroids = [];
@@ -100,37 +102,22 @@ export class AdminComponent implements OnInit {
   }
   
   saveArmor() {
-    if (this.globalSettings.upgrades) {
-      this.globalSettings.upgrades.push(this.newArmor);
-    } else {
-      this.globalSettings.upgrades = [this.newArmor];
-    }
+    this.globalService.saveUpgrade(this.newArmor);
     this.newArmor = new Upgrade('','',UpgradeType.Armor);
-    this.globalService.save(this.globalSettings);
   }
   
   saveDamage() {
-    if (this.globalSettings.upgrades) {
-      this.globalSettings.upgrades.push(this.newDamage);
-    } else {
-      this.globalSettings.upgrades = [this.newDamage];
-    }
+    this.globalService.saveUpgrade(this.newDamage);
     this.newDamage = new Upgrade('','',UpgradeType.Damage);
-    this.globalService.save(this.globalSettings);
   }
   
   saveRange() {
-    if (this.globalSettings.upgrades) {
-      this.globalSettings.upgrades.push(this.newRange);
-    } else {
-      this.globalSettings.upgrades = [this.newRange];
-    }
+    this.globalService.saveUpgrade(this.newRange);
     this.newRange = new Upgrade('','',UpgradeType.Range);
-    this.globalService.save(this.globalSettings);
   }
   
   removeUpgrade(upgradeKey) {
-    
+    this.globalService.removeUpgrade(upgradeKey);
   }
 
 }
