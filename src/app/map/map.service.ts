@@ -4,7 +4,8 @@ import {Subject}    from 'rxjs/Subject';
 import {ISpaceObject, Ship, SpaceObjectService, SpaceObjectType} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
-import {AuthService} from '../shared/auth.service';
+import {AuthService, UserService} from '../shared';
+import {User} from '../shared';
 
 export interface IAction {
 	label: string;
@@ -51,7 +52,8 @@ export class MapService {
 	maxPlanets: number = 100;
 
 
-	ship: Ship;
+	ship: User;
+	ships: User[] = [];
 	grid$: Observable<Cell[][]>;
 	gridObserver: Observer<Cell[][]>;
 	spaceObjects: ISpaceObject[] = [];
@@ -62,20 +64,17 @@ export class MapService {
 	transitionsObserver: Observer<string>;
 
 
-	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
+	constructor(private userService: UserService, authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
+		userService.users$.subscribe(ships => {
+			this.ships = ships;
+			this.populateGrid();
+		});
+		userService.currentUser.subscribe(ship => {
+			this.ship = ship;
+		});
 		spaceObjectService.spaceObjects$.subscribe(objects => {
-			for (let o = 0; o < objects.length; o++) {
-				let object = objects[o] as Ship;
-				if (object.ownerKey === authService.id) {
-					this.ship = object;
-				}
-			}
-			if (!this.ship) {
-				this.ship = spaceObjectService.createShip();
-				spaceObjectService.registerShip(this.ship);
-			}
 			this.spaceObjects = objects;
 			this.populateGrid();
 		});
@@ -105,22 +104,22 @@ export class MapService {
 	}
 
 	pewPew(x, y) {
-		this.spaceObjects.forEach(function(spaceObject) {
-			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key) {
+		this.ships.forEach(function(ship) {
+			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
 				this.ship.currentScore++;
 				this.ship.totalScore++;
-				spaceObject.currentScore = spaceObject.currentScore > 0 ? spaceObject.currentScore - 1 : 0;
-				spaceObject.stolenScore = spaceObject.stolenScore ? spaceObject.stolenScore + 1 : 1;
-				this.spaceObjectService.scoreShip(this.ship);
-				this.spaceObjectService.scoreShip(spaceObject);
+				ship.currentScore = ship.currentScore > 0 ? ship.currentScore - 1 : 0;
+				ship.stolenScore = ship.stolenScore ? ship.stolenScore + 1 : 1;
+				this.userService.scoreShip(this.ship);
+				this.userService.scoreShip(ship);
 			}
 		}.bind(this));
 	}
 
 	collisionCheck(x, y) {
 		let collide = false;
-		this.spaceObjects.forEach(function(spaceObject) {
-			if (spaceObject.x === x && spaceObject.y === y && spaceObject.$key !== this.ship.$key && spaceObject.type === 0) {
+		this.ships.forEach(function(ship) {
+			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
 				collide = true;
 			}
 		}.bind(this));
@@ -151,8 +150,8 @@ export class MapService {
 		this.ship.x = this.wraparound(this.ship.x, this.extent);
 		this.ship.y = this.wraparound(this.ship.y, this.extent);
 		this.populateGrid();
-		this.spaceObjectService.moveShip(this.ship);
 		this.doAnimations(this.ship.facing);
+		this.userService.moveShip(this.ship);
 	}
 
 	rotateRight() {
@@ -161,7 +160,7 @@ export class MapService {
 		} else {
 			this.ship.facing = 0;
 		}
-		this.spaceObjectService.moveShip(this.ship);
+		this.userService.moveShip(this.ship);
 	}
 
 	rotateLeft() {
@@ -170,7 +169,7 @@ export class MapService {
 		} else {
 			this.ship.facing = 3;
 		}
-		this.spaceObjectService.moveShip(this.ship);
+		this.userService.moveShip(this.ship);
 	}
 
 	fireWeapon() {
@@ -279,14 +278,19 @@ export class MapService {
 
 	addObjects(grid) {
 		let planetCount = 0;
-		for (let i = 0; i < this.spaceObjects.length; i++) {
-			let obj = this.spaceObjects[i];
-			grid[obj.x][obj.y].contents = obj;
-			if (obj.type === SpaceObjectType.Planet) {
+		this.spaceObjects.forEach(spaceObject => {
+			grid[spaceObject.x][spaceObject.y].contents = spaceObject;
+			if(spaceObject.type === SpaceObjectType.Planet) {
 				planetCount++;
 			}
-		}
-		if (planetCount < this.maxPlanets) {
+		});
+		this.ships.forEach(ship => {
+			let shipKeys = Object.keys(ship);
+			if (shipKeys.indexOf('x') > -1 && shipKeys.indexOf('y') > -1) {
+				grid[ship.x][ship.y].contents = ship;
+			}
+		});
+		if(planetCount < this.maxPlanets) {
 			let planetX = Math.floor(Math.random() * this.extent);
 			let planetY = Math.floor(Math.random() * this.extent);
 			if (!grid[planetX][planetY].contents) {

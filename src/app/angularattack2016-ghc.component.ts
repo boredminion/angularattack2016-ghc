@@ -7,6 +7,7 @@ import {MapComponent} from './map';
 import {ShipyardComponent} from './shipyard';
 import {AdminComponent} from './admin';
 import {ScoresComponent} from './scores';
+import {IntroComponent} from './intro';
 import {AuthService, UserService} from './shared';
 
 @Component({
@@ -20,7 +21,8 @@ import {AuthService, UserService} from './shared';
 @Routes([
   {path: '/', component: WelcomeComponent}, {path: '/chat', component: MessagesComponent},
   {path: '/map', component: MapComponent}, {path: '/shipyard', component: ShipyardComponent},
-  {path: '/admin', component: AdminComponent}, {path: '/scores', component: ScoresComponent}
+  {path: '/admin', component: AdminComponent}, {path: '/scores', component: ScoresComponent},
+  {path: '/intro', component: IntroComponent}
 ])
 
 export class Angularattack2016GhcAppComponent implements OnInit {
@@ -28,10 +30,18 @@ export class Angularattack2016GhcAppComponent implements OnInit {
 
   constructor(private auth: AuthService, private userService: UserService, private router: Router) {
   }
+  
+  checkIntro() {
+    this.userService.currentUser.subscribe(user => {
+        if (!user.image) {
+          this.router.navigate(['/intro']);
+        }
+      });
+  }
 
   ngOnInit() {
     if (this.auth.authenticated) {
-      //this.router.navigate(['/map']);
+      this.checkIntro();
     } else {
       this.router.navigate(['/']);
     }
@@ -49,7 +59,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
           // on fulfilled
           // this.userService.setOnline(); // this didn't work, refreshing the page sets a user
           // online though
-          window.location.replace('/chat');
+          window.location.replace('/map');
         },
         (err) => {
             // on rejected
