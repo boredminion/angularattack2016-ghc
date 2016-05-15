@@ -5,4 +5,5 @@ export interface IUpgrade {
 	value: number;
     name: string;
 	type: UpgradeType;
+    cost: number;
 }

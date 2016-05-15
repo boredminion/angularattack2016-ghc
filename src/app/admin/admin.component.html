@@ -32,7 +32,7 @@
                   <input type="number" class="form-control" id="numPlanets" [(ngModel)]="globalSettings.maxPlanets" autocomplete="off" autofocus
                     required min="5" max="500">
                   <span class="input-group-btn">
-                <button class="btn btn-default" (click)="resetPlanets();">Reset Planets</button>
+                <button class="btn btn-default" (click)="resetPlanets();" [disabled]="notAdmin">Reset Planets</button>
               </span>
                 </div>
               </fieldset>
@@ -42,7 +42,7 @@
                   <input type="number" class="form-control" id="maxAsteroids" [(ngModel)]="globalSettings.maxAsteroids" autocomplete="off"
                     autofocus required min="5" max="200">
                   <span class="input-group-btn">
-                <button class="btn btn-default" (click)="resetAsteroids();">Reset Asteroids</button>
+                <button class="btn btn-default" (click)="resetAsteroids();" [disabled]="notAdmin">Reset Asteroids</button>
               </span>
                 </div>
               </fieldset>
@@ -52,7 +52,7 @@
                   <input type="number" class="form-control" id="maxAIShips" [(ngModel)]="globalSettings.maxAIShips" autocomplete="off" autofocus
                     required min="1" max="200">
                   <span class="input-group-btn">
-                <button class="btn btn-default" (click)="resetAIShips();">Reset AI Ships</button>
+                <button class="btn btn-default" (click)="resetAIShips();" [disabled]="notAdmin">Reset AI Ships</button>
               </span>
                 </div>
               </fieldset>
@@ -108,7 +108,7 @@
             <h4 class="card-title">Armor Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'">{{armor | json}}
+            <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'">{{armor.name}}: {{armor.value}} Armor <span class="pull-right text-muted">${{armor.cost}}</span>
               <button class="btn btn-danger" (click)="removeUpgrade(armor.$key)" [disabled]="notAdmin">Remove</button>
             </li>
           </ul>
@@ -122,7 +122,12 @@
               <fieldset class="form-group">
                 <label for="armorValue">Amount</label>
                 <input type="number" class="form-control" id="armorValue" [(ngModel)]="newArmor.value" autocomplete="off" autofocus
-                  required min="0" max="5">
+                  required min="0" max="1000">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="armorCost">Cost</label>
+                <input type="number" class="form-control" id="armorCost" [(ngModel)]="newArmor.cost" autocomplete="off" autofocus
+                  required min="1" max="10000000">
               </fieldset>
               <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Add</button>
             </form>
@@ -133,7 +138,7 @@
             <h4 class="card-title">Damage Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'">{{damage | json}}
+            <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'">{{damage.name}}: {{damage.value}} Damage <span class="pull-right text-muted">${{damage.cost}}</span>
               <button class="btn btn-danger" (click)="removeUpgrade(damage.$key)" [disabled]="notAdmin">Remove</button>
             </li>
           </ul>
@@ -149,16 +154,21 @@
                 <input type="number" class="form-control" id="damageValue" [(ngModel)]="newDamage.value" autocomplete="off" autofocus
                   required min="0" max="5">
               </fieldset>
+              <fieldset class="form-group">
+                <label for="damageCost">Cost</label>
+                <input type="number" class="form-control" id="damageCost" [(ngModel)]="newDamage.cost" autocomplete="off" autofocus
+                  required min="1" max="10000000">
+              </fieldset>
               <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Add</button>
             </form>
           </div>
         </div>
         <div class="card">
           <div class="card-block">
-            <h4 class="card-title">Range Upgrades</h4>
+            <h4 class="card-title">Weapon Range Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'">{{range | json}}
+            <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'">{{range.name}}: {{range.value}} Distance <span class="pull-right text-muted">${{range.cost}}</span>
               <button class="btn btn-danger" (click)="removeUpgrade(range.$key)" [disabled]="notAdmin">Remove</button>
             </li>
           </ul>
@@ -173,6 +183,11 @@
                 <label for="rangeValue">Amount</label>
                 <input type="number" class="form-control" id="rangeValue" [(ngModel)]="newRange.value" autocomplete="off" autofocus
                   required min="0" max="5">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="rangeCost">Cost</label>
+                <input type="number" class="form-control" id="rangeCost" [(ngModel)]="newRange.cost" autocomplete="off" autofocus
+                  required min="1" max="10000000">
               </fieldset>
               <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Add</button>
             </form>

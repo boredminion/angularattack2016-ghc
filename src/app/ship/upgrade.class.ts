@@ -5,9 +5,11 @@ export class Upgrade implements IUpgrade {
 	value: number;
     name: string;
 	type: UpgradeType;
-	constructor(name, value, type) {
-		this.name = name || 'name';
+    cost: number;
+	constructor(name: string, value: number, type: UpgradeType, cost: number) {
+		this.name = name || '';
         this.value = value || 0;
 		this.type = type;
+        this.cost = cost || 100000000;
 	}
 }

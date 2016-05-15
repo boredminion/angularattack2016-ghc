@@ -19,9 +19,9 @@ export class AdminComponent implements OnInit {
   asteroids: Asteroid[] = [];
   planets: Planet[] = [];
   upgrades: Upgrade[] = [];
-  newArmor: Upgrade = new Upgrade('', '', UpgradeType.Armor);
-  newDamage: Upgrade = new Upgrade('', '', UpgradeType.Damage);
-  newRange: Upgrade = new Upgrade('', '', UpgradeType.Range);
+  newArmor: Upgrade = new Upgrade('', 0, UpgradeType.Armor, 10000);
+  newDamage: Upgrade = new Upgrade('', 0, UpgradeType.Damage, 10000);
+  newRange: Upgrade = new Upgrade('', 0, UpgradeType.Range, 10000);
 
   constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService, private userService: UserService) {
     this.userService.currentUser.subscribe(user => {
@@ -107,17 +107,17 @@ export class AdminComponent implements OnInit {
   
   saveArmor() {
     this.globalService.saveUpgrade(this.newArmor);
-    this.newArmor = new Upgrade('','',UpgradeType.Armor);
+    this.newArmor = new Upgrade('',0,UpgradeType.Armor, 10000);
   }
   
   saveDamage() {
     this.globalService.saveUpgrade(this.newDamage);
-    this.newDamage = new Upgrade('','',UpgradeType.Damage);
+    this.newDamage = new Upgrade('',0,UpgradeType.Damage, 10000);
   }
   
   saveRange() {
     this.globalService.saveUpgrade(this.newRange);
-    this.newRange = new Upgrade('','',UpgradeType.Range);
+    this.newRange = new Upgrade('',0,UpgradeType.Range, 10000);
   }
   
   removeUpgrade(upgradeKey) {
