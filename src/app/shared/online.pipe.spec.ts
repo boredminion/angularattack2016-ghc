@@ -11,6 +11,6 @@ describe('Online Pipe', () => {
   beforeEachProviders(() => [Online]);
 
   it('should transform the input', inject([Online], (pipe: Online) => {
-      expect(pipe.transform(true)).toBe(null);
+      expect(pipe.transform([])).toBe([]);
   }));
 });

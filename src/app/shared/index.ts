@@ -14,7 +14,7 @@ export * from './online.pipe';
 export interface IUser {
   $key: string;
   shipName: string;
-  online: any;
+  online: boolean;
   facing: Direction;
   image: string;
 	ownerKey: string;
@@ -28,7 +28,7 @@ export interface IUser {
 export class User implements IUser {
   $key: string;
   shipName: string;
-  online: any;
+  online: boolean;
   image: string;
   facing: Direction;
 	ownerKey: string;
