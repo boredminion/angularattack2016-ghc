@@ -11,6 +11,7 @@ export class Asteroid implements ISpaceObject {
 	image: string;
 	ownerKey: string;
 	size: number;
+	time: number;
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
