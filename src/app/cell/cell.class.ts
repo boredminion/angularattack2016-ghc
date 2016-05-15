@@ -8,5 +8,7 @@ export class Cell implements ICell {
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
+		this.contents = null;
+		this.planet = null;
 	}
 }

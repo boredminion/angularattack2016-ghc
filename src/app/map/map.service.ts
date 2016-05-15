@@ -55,6 +55,8 @@ export class MapService {
 	ship: User;
 	ships: User[] = [];
 	grid$: Observable<Cell[][]>;
+	fullGrid: Cell[][] = [];
+	visibleGrid: Cell[][] = [];
 	gridObserver: Observer<Cell[][]>;
 	spaceObjects: ISpaceObject[] = [];
 	private _nextActionSource = new Subject<Action>();
@@ -65,7 +67,19 @@ export class MapService {
 
 
 	constructor(private userService: UserService, authService: AuthService, private spaceObjectService: SpaceObjectService) {
+		for (let i = 0; i < this.x; i++) {
+			this.visibleGrid.push([]);
+		}
+		for (let i = 0; i < this.extent; i++) {
+			this.fullGrid.push([]);
+			for (let j = 0; j < this.extent; j++) {
+				this.fullGrid[i][j] = new Cell(i, j);
+			}
+		}
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
+		this.grid$.subscribe(grid => {
+			this.visibleGrid = grid;
+		});
 		this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
 		userService.users$.subscribe(ships => {
 			this.ships = ships;
@@ -256,36 +270,9 @@ export class MapService {
 	}
 
 	populateGrid() {
-		let visibleGrid = [];
-		let fullGrid = [];
-		for (let i = 0; i < this.extent; i++) {
-			fullGrid.push([]);
-		}
-		for (let i = 0; i < this.x; i++) {
-			visibleGrid.push([]);
-		}
-		for (let i = 0; i < this.extent; i++) {
-			for (let j = 0; j < this.extent; j++) {
-				fullGrid[i][j] = new Cell(i, j);
-			}
-		}
-		fullGrid = this.addObjects(fullGrid);
-		let visibleX = this.ship.x + 1 - Math.floor(this.x / 2);
-		let visibleY = this.ship.y + 1 - Math.floor(this.y / 2);
-		for (let i = 0; i < this.x; i++) {
-			for (let j = 0; j < this.x; j++) {
-				let gridX = this.wraparound(i + visibleX, this.extent);
-				let gridY = this.wraparound(j + visibleY, this.extent);
-				visibleGrid[i][j] = fullGrid[gridX][gridY];
-			}
-		}
-		this.gridObserver.next(visibleGrid);
-	}
-
-	addObjects(grid) {
 		let planetCount = 0;
 		this.spaceObjects.forEach(spaceObject => {
-			grid[spaceObject.x][spaceObject.y].planet = spaceObject;
+			this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
 			if(spaceObject.type === SpaceObjectType.Planet) {
 				planetCount++;
 			}
@@ -293,17 +280,48 @@ export class MapService {
 		this.ships.forEach(ship => {
 			let shipKeys = Object.keys(ship);
 			if (shipKeys.indexOf('x') > -1 && shipKeys.indexOf('y') > -1) {
-				grid[ship.x][ship.y].contents = ship;
+				if (this.fullGrid[ship.x][ship.y].contents !== null) {
+					let gridShip: User = this.fullGrid[ship.x][ship.y].contents;
+					
+					if (gridShip && gridShip.x === ship.x && gridShip.y === ship.y && gridShip.facing === ship.facing && gridShip.$key === ship.$key) {
+						//don't do anything, ship didn't rotate or move
+					} else {
+						if (gridShip && gridShip.x === ship.x && gridShip.y === ship.y) {
+							// ship may be rotating
+							this.fullGrid[ship.x][ship.y].contents = ship;
+						} else {
+							this.fullGrid[ship.x][ship.y].contents = ship;
+							this.fullGrid[ship.lastX][ship.lastY].contents = null;
+						}
+					}
+				} else {
+					// ship moved into an empty space
+					if (shipKeys.indexOf('lastX') > -1 && shipKeys.indexOf('lastY') > -1) {
+						if (this.fullGrid[ship.lastX][ship.lastY].contents && this.fullGrid[ship.lastX][ship.lastY].contents.$key === ship.$key) {
+							this.fullGrid[ship.lastX][ship.lastY].contents = null;
+						}
+					}
+					this.fullGrid[ship.x][ship.y].contents = ship;
+				}
 			}
 		});
 		if(planetCount < this.maxPlanets) {
 			let planetX = Math.floor(Math.random() * this.extent);
 			let planetY = Math.floor(Math.random() * this.extent);
-			if(!grid[planetX][planetY].planet) {
+			if(!this.fullGrid[planetX][planetY].planet) {
 				this.spaceObjectService.createPlanet(planetX, planetY, null);
 			}
 		}
-		return grid;
+		let visibleX = this.ship.x + 1 - Math.floor(this.x / 2);
+		let visibleY = this.ship.y + 1 - Math.floor(this.y / 2);
+		for (let i = 0; i < this.x; i++) {
+			for (let j = 0; j < this.y; j++) {
+				let gridX = this.wraparound(i + visibleX, this.extent);
+				let gridY = this.wraparound(j + visibleY, this.extent);
+				this.visibleGrid[i][j] = this.fullGrid[gridX][gridY];
+			}
+		}
+		this.gridObserver.next(this.visibleGrid);
 	}
 
 	wraparound(value, limit) {

@@ -20,6 +20,8 @@ export interface IUser {
 	ownerKey: string;
 	x: number;
 	y: number;
+  lastX: number;
+  lastY: number;
 	currentScore: number;
 	stolenScore: number;
 	totalScore: number;
@@ -34,6 +36,8 @@ export class User implements IUser {
 	ownerKey: string;
 	x: number;
 	y: number;
+  lastX: number;
+  lastY: number;
 	currentScore: number;
 	stolenScore: number;
 	totalScore: number;
