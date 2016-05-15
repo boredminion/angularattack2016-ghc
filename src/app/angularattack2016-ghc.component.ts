@@ -10,10 +10,13 @@ import {AdminComponent} from './admin';
 import {ScoresComponent} from './scores';
 import {IntroComponent} from './intro';
 import {AuthService, UserService} from './shared';
+import {ToasterContainerComponent, ToasterService} from 'angular2-toaster/angular2-toaster';
+
 
 @Component({
   moduleId: module.id,
-  directives: [ROUTER_DIRECTIVES, NavbarComponent],
+  directives: [ROUTER_DIRECTIVES, NavbarComponent, ToasterContainerComponent],
+  providers: [ToasterService],
   selector: 'angularattack2016-ghc-app',
   templateUrl: 'angularattack2016-ghc.component.html',
   styleUrls: ['angularattack2016-ghc.component.css']
@@ -29,8 +32,12 @@ import {AuthService, UserService} from './shared';
 export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
 
-  constructor(private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
+  constructor(private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
   }
+  
+  popToast() {
+        this.toasterService.pop('success', 'Args Title', 'Args Body');
+    }
 
   checkIntro() {
     this.userService.currentUser.subscribe(user => {

@@ -5,7 +5,8 @@
 const map: any = {
   firebase: 'vendor/firebase/lib/firebase-web.js',
   angularfire2: 'vendor/angularfire2',
-  'ng2-bootstrap': 'vendor/ng2-bootstrap/ng2-bootstrap.js'
+  'ng2-bootstrap': 'vendor/ng2-bootstrap/ng2-bootstrap.js',
+  'angular2-toaster': 'vendor/angular2-toaster'
 };
 
 /** User packages configuration. */
@@ -50,6 +51,7 @@ declare var System: any;
 
 // Apply the CLI SystemJS configuration.
 System.config({
+  defaultJSExtensions: true,
   map: {'@angular': 'vendor/@angular', 'rxjs': 'vendor/rxjs', 'main': 'main.js'},
   packages: cliSystemConfigPackages
 });
