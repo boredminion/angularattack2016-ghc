@@ -46,10 +46,10 @@ export class MapService {
 
 	tradeMission: any;
 
-
 	settings: Settings = new Settings();
 	ship: User;
 	ships: User[] = [];
+	aiShips: AIShip[] = [];
 	grid$: Observable<Cell[][]>;
 	fullGrid: Cell[][] = [];
 	visibleGrid: Cell[][] = [];
@@ -95,7 +95,11 @@ export class MapService {
 			this.spaceObjectService.spaceObjects$.subscribe(objects => {
 				this.spaceObjects = objects;
 				this.fullGrid.forEach(row => row.forEach(cell => cell.planet = undefined));
+				this.aiShips = [];
 				this.spaceObjects.forEach(spaceObject => {
+					if (spaceObject.type === SpaceObjectType.AIShip) {
+						this.aiShips.push(spaceObject);
+					}
 					this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
 					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
 						setTimeout(() => {
@@ -109,6 +113,33 @@ export class MapService {
 		this.nextAction$.subscribe(action => {
 			this.currentAction = action;
 		});
+
+		setInterval(() => this.aiAction(), 1000);
+	}
+
+	aiAction() {
+		let ship = this.aiShips[Math.floor(Math.random() * this.aiShips.length)];
+		if (!ship.isControlled) {
+			this.spaceObjectService.spaceObjects$.update(ship.$key, { isControlled: true });
+			let order = Math.floor(Math.random() * 4);
+			switch (order) {
+				case 0:
+					//move
+					this.moveForward(ship);
+					break;
+				case 1:
+					//port
+					this.rotateLeft(ship);
+					break;
+				case 2:
+					//stb
+					this.rotateRight(ship);
+					break;
+				case 3:
+					//shoot
+					break;
+			}
+		}
 	}
 
 	createAIShip() {
@@ -218,55 +249,78 @@ export class MapService {
 				collide = true;
 			}
 		}.bind(this));
+		this.aiShips.forEach(function(ship) {
+			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
+				collide = true;
+			}
+		}.bind(this));
 		return collide;
 	}
 
-	forwardCell() {
-		switch (this.ship.facing) {
+	forwardCell(ship) {
+		switch (ship.facing) {
 			case 0:
-				return [this.wraparound(this.ship.x - 1, this.settings.mapExtent), (this.ship.y)];
+				return [this.wraparound(ship.x - 1, this.settings.mapExtent), (ship.y)];
 			case 1:
-				return [(this.ship.x), this.wraparound(this.ship.y + 1, this.settings.mapExtent)];
+				return [(ship.x), this.wraparound(ship.y + 1, this.settings.mapExtent)];
 			case 2:
-				return [this.wraparound(this.ship.x + 1, this.settings.mapExtent), (this.ship.y)];
+				return [this.wraparound(ship.x + 1, this.settings.mapExtent), (ship.y)];
 			case 3:
-				return [(this.ship.x), this.wraparound(this.ship.y - 1, this.settings.mapExtent)];
+				return [(ship.x), this.wraparound(ship.y - 1, this.settings.mapExtent)];
 		}
 	}
 
-	moveForward() {
-		let move = this.forwardCell();
+	moveForward(ship) {
+		let movingShip = ship || this.ship;
+		let move = this.forwardCell(movingShip);
 		if (this.collisionCheck(move[0], move[1])) {
 			console.log("can't move there");
 			return;
 		}
-		this.ship.x = move[0];
-		this.ship.y = move[1];
-		this.ship.x = this.wraparound(this.ship.x, this.settings.mapExtent);
-		this.ship.y = this.wraparound(this.ship.y, this.settings.mapExtent);
+		movingShip.x = move[0];
+		movingShip.y = move[1];
+		movingShip.x = this.wraparound(movingShip.x, this.settings.mapExtent);
+		movingShip.y = this.wraparound(movingShip.y, this.settings.mapExtent);
 		this.populateGrid();
-		this.doAnimations(this.ship.facing);
-		this.userService.moveShip(this.ship);
+		if(!ship) {
+			this.doAnimations(movingShip.facing);
+		}
+		this.updateShip(movingShip, !!ship);
 	}
 
-	rotateRight() {
-		let oldFacing = this.ship.facing;
-		if (this.ship.facing < 3) {
-			this.ship.facing++;
+	rotateRight(ship) {
+		let turningShip = ship || this.ship;
+		let oldFacing = turningShip.facing;
+		if (turningShip.facing < 3) {
+			turningShip.facing++;
 		} else {
-			this.ship.facing = 0;
+			turningShip.facing = 0;
 		}
-		this.userService.moveShip(this.ship);
+		this.updateShip(turningShip, !!ship);
 	}
 
-	rotateLeft() {
-		let oldFacing = this.ship.facing;
-		if (this.ship.facing) {
-			this.ship.facing--;
+	rotateLeft(ship) {
+		let turningShip = ship || this.ship;
+		let oldFacing = turningShip.facing;
+		if (turningShip.facing) {
+			turningShip.facing--;
 		} else {
-			this.ship.facing = 3;
+			turningShip.facing = 3;
 		}
-		this.userService.moveShip(this.ship);
+		this.updateShip(turningShip, !!ship);
+	}
+
+	updateShip(ship, isAi) {
+		if (isAi) {
+			this.spaceObjectService.spaceObjects$.update(ship.$key, {
+				x: ship.x,
+				y: ship.y,
+				isControlled: false,
+				facing: ship.facing
+			});
+		} else {
+			this.userService.moveShip(ship);
+		}
 	}
 
 	mine() {

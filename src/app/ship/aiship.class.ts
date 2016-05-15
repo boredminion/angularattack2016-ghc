@@ -14,6 +14,8 @@ export class AIShip implements ISpaceObject {
 	health: number = 50;
 	weaponRange: number = 0;
 	weaponDamage: number = 0;
+	isControlled: boolean = false;
+	facing: number = 0;
 	constructor(x, y, image) {
 		this.x = x;
 		this.y = y;
