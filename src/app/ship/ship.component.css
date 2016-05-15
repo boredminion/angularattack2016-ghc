@@ -1,8 +1,21 @@
 .ship {
   height: 5vw;
+  position: absolute;
   width: 5vw;
   transition: all 1s ease-out;
   -webkit-transition: all 1s ease-out;
+}
+
+.ship.type-1 {
+  z-index: 100;
+}
+
+.ship.type-2 {
+  z-index: 50;
+}
+
+.ship.type-3 {
+  z-index: 200;
 }
 
 .ship.coreward {
