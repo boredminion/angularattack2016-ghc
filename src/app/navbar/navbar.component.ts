@@ -13,8 +13,10 @@ import {UserService, User} from '../shared';
 export class NavbarComponent implements OnInit {
   @Input() authenticated: boolean;
   @Input() score: number;
+  @Input() intro: boolean;
   @Output() signOut: EventEmitter<any> = new EventEmitter(false);
   @Output() signInWithGithub: EventEmitter<any> = new EventEmitter(false);
+  @Output() signInWithTwitter: EventEmitter<any> = new EventEmitter(false);
   
   constructor() {}
 

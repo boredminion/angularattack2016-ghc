@@ -19,6 +19,6 @@ export class MessagesService {
   removeMessages(): void { this.af.database.list(`/messages`).remove(); }
 
   sendMessage(text: string): Promise<any> {
-    return this.messages$.push(new Message(text, this.authService.username, this.authService.id));
+    return this.messages$.push(new Message(text, this.authService.username, this.authService.id, this.authService.profileLink));
   }
 }

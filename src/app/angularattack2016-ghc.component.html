@@ -1,5 +1,5 @@
-<app-navbar [score]="score" [authenticated]="auth.authenticated"
-  (signOut)="signOut()" (signInWithGithub)="signInWithGithub()"></app-navbar>
+<app-navbar [score]="score" [intro]="intro" [authenticated]="auth.authenticated"
+  (signOut)="signOut()" (signInWithGithub)="signInWithGithub()" (signInWithTwitter)="signInWithTwitter()"></app-navbar>
 <toaster-container></toaster-container>
 <div class="container-fluid main-container">
   <router-outlet></router-outlet>
