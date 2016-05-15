@@ -1,5 +1,6 @@
 .cell {
 	display: inline-block;
 	height: 5vw;
+	position: relative;
 	width: 5vw;
 }
