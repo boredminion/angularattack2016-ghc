@@ -88,7 +88,7 @@ export class SpaceObjectService {
 	}
 
 	damage(ship: AIShip) {
-		if (ship.health) {
+		if (ship.health > 0) {
 			this.spaceObjects$.update(ship.$key, {
 				health: ship.health
 			});

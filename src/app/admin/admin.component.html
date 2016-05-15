@@ -30,7 +30,7 @@
                 <label for="numPlanets">Number of Planets ({{planets.length}})</label>
                 <div class="input-group">
                   <input type="number" class="form-control" id="numPlanets" [(ngModel)]="globalSettings.maxPlanets" autocomplete="off" autofocus
-                    required min="5" max="500">
+                    required min="0" max="500">
                   <span class="input-group-btn">
                 <button class="btn btn-default" (click)="resetPlanets();" [disabled]="notAdmin">Reset Planets</button>
               </span>
@@ -40,7 +40,7 @@
                 <label for="maxAsteroids">Number of Asteroids ({{asteroids.length}})</label>
                 <div class="input-group">
                   <input type="number" class="form-control" id="maxAsteroids" [(ngModel)]="globalSettings.maxAsteroids" autocomplete="off"
-                    autofocus required min="5" max="200">
+                    autofocus required min="0" max="200">
                   <span class="input-group-btn">
                 <button class="btn btn-default" (click)="resetAsteroids();" [disabled]="notAdmin">Reset Asteroids</button>
               </span>
@@ -50,7 +50,7 @@
                 <label for="maxAI">Number of AI Ships ({{aiShips.length}})</label>
                 <div class="input-group">
                   <input type="number" class="form-control" id="maxAIShips" [(ngModel)]="globalSettings.maxAIShips" autocomplete="off" autofocus
-                    required min="1" max="200">
+                    required min="0" max="200">
                   <span class="input-group-btn">
                 <button class="btn btn-default" (click)="resetAIShips();" [disabled]="notAdmin">Reset AI Ships</button>
               </span>

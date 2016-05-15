@@ -274,7 +274,7 @@ export class MapService {
 					if (object.type === SpaceObjectType.AIShip) {
 						let ship = object as AIShip;
 						if (ship.x === x && ship.y === y) {
-							
+							console.log(ship);
 							ship.health = ship.health ? ship.health - weaponDamage : shipHealth - weaponDamage;
 							if (!aiShip) {
 								this.ship.currentScore = this.ship.currentScore + weaponDamage;
