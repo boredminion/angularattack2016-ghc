@@ -1,12 +1,13 @@
 import {AuthService} from './auth.service';
 import {UserService} from './user.service';
 import {GlobalService} from './global.service';
+import {NotificationsService} from './notifications.service';
 import {Direction} from '../map';
 
 export {AuthService};
 export {AuthRouteService} from './auth-route.service';
 
-export const SHARED_PROVIDERS: any[] = [GlobalService, AuthService, UserService];
+export const SHARED_PROVIDERS: any[] = [GlobalService, AuthService, UserService, NotificationsService];
 export * from './user.service';
 export * from './online.pipe';
 export * from './upgrades.pipe';
@@ -53,3 +54,4 @@ export class User implements IUser {
     this.image = image;
   }
 }
+export * from './notifications.service';

@@ -4,8 +4,8 @@ import {Subject}    from 'rxjs/Subject';
 import {ISpaceObject, SpaceObjectService, SpaceObjectType, AIShip} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
-import {UserService, User, GlobalService, Settings} from '../shared';
-import {ToasterService} from 'angular2-toaster/angular2-toaster';
+import {UserService, User, GlobalService, Settings, NotificationsService} from '../shared';
+import {Angularattack2016GhcAppComponent} from '../';
 
 export interface IAction {
 	label: string;
@@ -62,13 +62,12 @@ export class MapService {
 	transitions$: Observable<string>;
 	transitionsObserver: Observer<string>;
 
-
 	constructor(
 		private userService: UserService,
 		private spaceObjectService: SpaceObjectService,
 		private globalService: GlobalService,
-		private toaster: ToasterService) {
-
+		private notification: NotificationsService) {
+			
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		this.grid$.subscribe(grid => {
 			this.visibleGrid = grid;
@@ -231,8 +230,9 @@ export class MapService {
 						this.userService.scoreShip(ship);
 					}
 					hit = true;
+					console.log(aiShip);
 					if (!aiShip) {
-						this.toasterService.pop('success', 'Hit', 'You hit ' + ship.name + ' for ' + this.settings.baseWeaponDamage + ' points!');
+						this.notification.pop('success', 'Hit!', 'You hit ' + ship.name + ' for ' + this.settings.baseWeaponDamage + ' points!');
 					}
 					this.spaceObjectService.createBoom(x, y, true);
 				}

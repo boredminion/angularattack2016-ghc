@@ -61,7 +61,6 @@ export class GlobalService {
       if (settings === null) {
         this.save(new Settings());
       } else {
-        console.log(settings);
         this.globalSettings = settings;
       }
     });

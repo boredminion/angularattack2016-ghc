@@ -9,7 +9,7 @@ import {ShipyardComponent} from './shipyard';
 import {AdminComponent} from './admin';
 import {ScoresComponent} from './scores';
 import {IntroComponent} from './intro';
-import {AuthService, UserService} from './shared';
+import {AuthService, UserService, NotificationsService, Notification} from './shared';
 import {ToasterContainerComponent, ToasterService} from 'angular2-toaster/angular2-toaster';
 
 
@@ -32,7 +32,11 @@ import {ToasterContainerComponent, ToasterService} from 'angular2-toaster/angula
 export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
 
-  constructor(private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
+  constructor(private notificationsService: NotificationsService, private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
+    notificationsService.notification$.subscribe(notification => {
+      console.log(notification);
+      this.toasterService.pop(notification.type, notification.title, notification.message);
+    });
   }
 
   checkIntro() {
