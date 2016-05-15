@@ -1,1 +1,1 @@
-<img class="ship facing-{{ship.facing}}" ngClass="{{transitions}}" src="images/{{ship.image || 'spaceship14-240x185.png'}}">
+<img class="ship facing-{{ship.facing}}{{ship.type == 1 ? ' planet' : ship.type == 2 ? ' explosion' : ''}}" [ngClass]="transitions" src="images/{{ship.image || 'spaceship14-240x185.png'}}">
