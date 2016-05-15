@@ -1,12 +1,12 @@
 .ship {
   height: 5vw;
   width: 5vw;
-  transition: all 2s ease-out;
-  -webkit-transition: all 2s ease-out;
+  transition: all 1s ease-out;
+  -webkit-transition: all 1s ease-out;
 }
 
 .ship.coreward {
-  transform: translate(0, 5vw);
+  transform: translate(0, -5vw);
 }
 
 .ship.trailing {
@@ -14,7 +14,7 @@
 }
 
 .ship.rimward {
-  transform: translate(0, -5vw);
+  transform: translate(0, 5vw);
 }
 
 .ship.spinward {

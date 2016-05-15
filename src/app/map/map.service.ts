@@ -155,20 +155,26 @@ export class MapService {
 	}
 
 	rotateRight() {
+		let oldFacing = this.ship.facing;
 		if (this.ship.facing < 3) {
 			this.ship.facing++;
 		} else {
 			this.ship.facing = 0;
 		}
+		// this.transitionsObserver.next('facing-' + oldFacing);
+		// setTimeout(() => this.transitionsObserver.next(null), 1000);
 		this.userService.moveShip(this.ship);
 	}
 
 	rotateLeft() {
+		let oldFacing = this.ship.facing;
 		if (this.ship.facing) {
 			this.ship.facing--;
 		} else {
 			this.ship.facing = 3;
 		}
+		// this.transitionsObserver.next('facing-' + oldFacing);
+		// setTimeout(() => this.transitionsObserver.next(null), 1000);
 		this.userService.moveShip(this.ship);
 	}
 
