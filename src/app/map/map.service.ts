@@ -102,13 +102,15 @@ export class MapService {
 					if (spaceObject.type === SpaceObjectType.AIShip) {
 						this.aiShips.push(spaceObject);
 					}
-					if (this.fullGrid && spaceObject) {
+					if (spaceObject.x) {
 						this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
-						if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
-							setTimeout(() => {
-								spaceObjectService.spaceObjects$.remove(spaceObject.$key);
-							}, 1000)
-						}
+					} else {
+						spaceObjectService.spaceObjects$.remove(spaceObject.$key);
+					}
+					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
+						setTimeout(() => {
+							spaceObjectService.spaceObjects$.remove(spaceObject.$key);
+						}, 1000)
 					}
 				});
 			});
