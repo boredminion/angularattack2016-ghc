@@ -90,7 +90,20 @@ export class MapService {
 		});
 		spaceObjectService.spaceObjects$.subscribe(objects => {
 			this.spaceObjects = objects;
-			this.populateGrid();
+			let planetCount = 0;
+			this.spaceObjects.forEach(spaceObject => {
+				this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
+				if(spaceObject.type === SpaceObjectType.Planet) {
+					planetCount++;
+				}
+			});
+			if(planetCount < this.maxPlanets) {
+				let planetX = Math.floor(Math.random() * this.extent);
+				let planetY = Math.floor(Math.random() * this.extent);
+				if(!this.fullGrid[planetX][planetY].planet) {
+					this.spaceObjectService.createPlanet(planetX, planetY, null);
+				}
+			}
 		});
 		this.nextAction$.subscribe(action => {
 			this.currentAction = action;
@@ -270,13 +283,6 @@ export class MapService {
 	}
 
 	populateGrid() {
-		let planetCount = 0;
-		this.spaceObjects.forEach(spaceObject => {
-			this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
-			if(spaceObject.type === SpaceObjectType.Planet) {
-				planetCount++;
-			}
-		});
 		this.ships.forEach(ship => {
 			let shipKeys = Object.keys(ship);
 			if (shipKeys.indexOf('x') > -1 && shipKeys.indexOf('y') > -1) {
@@ -305,13 +311,6 @@ export class MapService {
 				}
 			}
 		});
-		if(planetCount < this.maxPlanets) {
-			let planetX = Math.floor(Math.random() * this.extent);
-			let planetY = Math.floor(Math.random() * this.extent);
-			if(!this.fullGrid[planetX][planetY].planet) {
-				this.spaceObjectService.createPlanet(planetX, planetY, null);
-			}
-		}
 		let visibleX = this.ship.x + 1 - Math.floor(this.x / 2);
 		let visibleY = this.ship.y + 1 - Math.floor(this.y / 2);
 		for (let i = 0; i < this.x; i++) {
