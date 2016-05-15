@@ -10,6 +10,9 @@ export class ShipComponent implements OnInit {
 	@Input()
 	ship: any;
 
+	@Input()
+	transitions: string;
+
   constructor() {}
 
   ngOnInit() {

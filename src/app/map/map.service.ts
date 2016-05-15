@@ -58,9 +58,13 @@ export class MapService {
 	private _nextActionSource = new Subject<Action>();
 	nextAction$ = this._nextActionSource.asObservable();
 	currentAction: Action;
+	transitions$: Observable<string>;
+	transitionsObserver: Observer<string>;
+
 
 	constructor(authService: AuthService, private spaceObjectService: SpaceObjectService) {
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
+		this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
 		spaceObjectService.spaceObjects$.subscribe(objects => {
 			for (let o = 0; o < objects.length; o++) {
 				let object = objects[o] as Ship;
@@ -78,6 +82,26 @@ export class MapService {
 		this.nextAction$.subscribe(action => {
 			this.currentAction = action;
 		});
+	}
+
+	doAnimations(facing) {
+		let animation;
+		switch(facing) {
+			case Direction.Coreward:
+				animation = 'coreward';
+				break;
+			case Direction.Trailing:
+				animation = 'trailing';
+				break;
+			case Direction.Rimward:
+				animation = 'rimward';
+				break;
+			case Direction.Spinward:
+				animation = 'spinward';
+				break;
+		}
+		this.transitionsObserver.next(animation);
+		setTimeout(() => this.transitionsObserver.next(null), 1000);
 	}
 
 	pewPew(x, y) {
@@ -120,14 +144,15 @@ export class MapService {
 		let move = this.forwardCell();
 		if (this.collisionCheck(move[0], move[1])) {
 			console.log("can't move there");
-		} else {
-			this.ship.x = move[0];
-			this.ship.y = move[1];
-			this.ship.x = this.wraparound(this.ship.x, this.extent);
-			this.ship.y = this.wraparound(this.ship.y, this.extent);
-			this.populateGrid();
+			return;
 		}
+		this.ship.x = move[0];
+		this.ship.y = move[1];
+		this.ship.x = this.wraparound(this.ship.x, this.extent);
+		this.ship.y = this.wraparound(this.ship.y, this.extent);
+		this.populateGrid();
 		this.spaceObjectService.moveShip(this.ship);
+		this.doAnimations(this.ship.facing);
 	}
 
 	rotateRight() {
@@ -257,14 +282,14 @@ export class MapService {
 		for (let i = 0; i < this.spaceObjects.length; i++) {
 			let obj = this.spaceObjects[i];
 			grid[obj.x][obj.y].contents = obj;
-			if(obj.type === SpaceObjectType.Planet) {
+			if (obj.type === SpaceObjectType.Planet) {
 				planetCount++;
 			}
 		}
-		if(planetCount < this.maxPlanets) {
+		if (planetCount < this.maxPlanets) {
 			let planetX = Math.floor(Math.random() * this.extent);
 			let planetY = Math.floor(Math.random() * this.extent);
-			if(!grid[planetX][planetY].contents) {
+			if (!grid[planetX][planetY].contents) {
 				this.spaceObjectService.createPlanet(planetX, planetY, null);
 			}
 		}
