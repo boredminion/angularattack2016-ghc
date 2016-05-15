@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {GlobalService, ISettings, Settings} from '../shared';
 import {MapService} from '../map';
-import {Upgrades} from '../shared';
+import {Upgrades, UserService, User} from '../shared';
 import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet, Upgrade, UpgradeType} from '../ship';
 
 @Component({
@@ -13,6 +13,7 @@ import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet, Upgrade, 
 })
 export class AdminComponent implements OnInit {
   @Input() model;
+  notAdmin: boolean = true;
   globalSettings: ISettings = new Settings();
   aiShips: AIShip[] = [];
   asteroids: Asteroid[] = [];
@@ -22,7 +23,10 @@ export class AdminComponent implements OnInit {
   newDamage: Upgrade = new Upgrade('', '', UpgradeType.Damage);
   newRange: Upgrade = new Upgrade('', '', UpgradeType.Range);
 
-  constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService) {
+  constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService, private userService: UserService) {
+    this.userService.currentUser.subscribe(user => {
+      this.notAdmin = !user.admin;
+    });
     globalService.globalSettings$.subscribe(settings => this.globalSettings = settings);
     globalService.upgrades.subscribe(upgrades => this.upgrades = upgrades);
     spaceObjectService.spaceObjects$.subscribe(spaceObjects => {

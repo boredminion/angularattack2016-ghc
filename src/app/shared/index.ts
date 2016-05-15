@@ -30,6 +30,7 @@ export interface IUser {
 	currentScore: number;
 	stolenScore: number;
 	totalScore: number;
+	admin: boolean;
 }
 
 export class User implements IUser {
@@ -48,6 +49,7 @@ export class User implements IUser {
 	totalScore: number = 0;
 	weaponRange: number = 0;
 	weaponDamage: number = 0;
+	admin: boolean = false;
 	image: string;
 	constructor(shipName: string, image: string) {
     this.shipName = shipName;

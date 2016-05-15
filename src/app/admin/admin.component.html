@@ -96,7 +96,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Save</button>
       </form>
     </div>
   </div>
@@ -109,7 +109,7 @@
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'">{{armor | json}}
-              <button class="btn btn-danger" (click)="removeUpgrade(armor.$key)">Remove</button>
+              <button class="btn btn-danger" (click)="removeUpgrade(armor.$key)" [disabled]="notAdmin">Remove</button>
             </li>
           </ul>
           <div class="card-block">
@@ -124,7 +124,7 @@
                 <input type="number" class="form-control" id="armorValue" [(ngModel)]="newArmor.value" autocomplete="off" autofocus
                   required min="0" max="5">
               </fieldset>
-              <button class="btn btn-primary" type="submit">Save</button>
+              <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Add</button>
             </form>
           </div>
         </div>
@@ -134,7 +134,7 @@
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'">{{damage | json}}
-              <button class="btn btn-danger" (click)="removeUpgrade(damage.$key)">Remove</button>
+              <button class="btn btn-danger" (click)="removeUpgrade(damage.$key)" [disabled]="notAdmin">Remove</button>
             </li>
           </ul>
           <div class="card-block">
@@ -149,7 +149,7 @@
                 <input type="number" class="form-control" id="damageValue" [(ngModel)]="newDamage.value" autocomplete="off" autofocus
                   required min="0" max="5">
               </fieldset>
-              <button class="btn btn-primary" type="submit">Save</button>
+              <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Add</button>
             </form>
           </div>
         </div>
@@ -159,7 +159,7 @@
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'">{{range | json}}
-              <button class="btn btn-danger" (click)="removeUpgrade(range.$key)">Remove</button>
+              <button class="btn btn-danger" (click)="removeUpgrade(range.$key)" [disabled]="notAdmin">Remove</button>
             </li>
           </ul>
           <div class="card-block">
@@ -174,7 +174,7 @@
                 <input type="number" class="form-control" id="rangeValue" [(ngModel)]="newRange.value" autocomplete="off" autofocus
                   required min="0" max="5">
               </fieldset>
-              <button class="btn btn-primary" type="submit">Add</button>
+              <button class="btn btn-primary" type="submit" [disabled]="notAdmin">Add</button>
             </form>
           </div>
         </div>
