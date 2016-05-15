@@ -108,7 +108,9 @@ export class MapService {
 							break;
 					}
 					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
-						spaceObjectService.spaceObjects$.remove(spaceObject.$key);
+						setTimeout(()=>{
+							spaceObjectService.spaceObjects$.remove(spaceObject.$key);
+						},1000)
 					}
 				});
 				if (asteroidCount < this.settings.maxAsteroids) {
