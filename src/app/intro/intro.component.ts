@@ -27,18 +27,20 @@ export class IntroComponent implements OnInit {
       'rocketship2-159x300.png'
     ];
     userService.currentUser.subscribe(user => {
-      this.selectedShip = user.image || 'spaceship-300x165.png';
-      this.shipName = user.shipName;
+      if (user && user.image && user.shipName) {
+        this.selectedShip = user.image || 'spaceship-300x165.png';
+        this.shipName = user.shipName;
+      }
     });
   }
 
   ngOnInit() {
   }
-  
-  selectShip(ship:string) {
+
+  selectShip(ship: string) {
     this.selectedShip = ship;
   }
-  
+
   save() {
     this.userService.setShipName(this.shipName, this.selectedShip, null, null, null);
   }

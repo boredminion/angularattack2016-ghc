@@ -39,7 +39,9 @@ export class Angularattack2016GhcAppComponent implements OnInit {
       this.toasterService.pop(notification.type, notification.title, notification.message);
     });
     userService.currentUser.subscribe(user => {
-      this.score = user.currentScore;
+      if (user && user.currentScore) {
+        this.score = user.currentScore;
+      }
     });
   }
 
