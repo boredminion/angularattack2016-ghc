@@ -13,6 +13,7 @@ export interface ISettings {
   mineValue: number;
   tradeValue: number;
   maxAsteroids: number;
+  maxAIShips: number;
 }
 
 export class Settings implements ISettings {
@@ -27,12 +28,14 @@ export class Settings implements ISettings {
   mineValue: number;
   tradeValue: number;
   maxAsteroids: number;
+  maxAIShips: number;
   constructor() {
     this.mapExtent = 100;
     this.mapX = 9;
     this.mapY = 11;
     this.maxPlanets = 100;
     this.maxAsteroids = 50;
+    this.maxAIShips = 100;
     this.actionDelay = 2;
     this.baseShipHealth = 100;
     this.baseWeaponDamage = 10;

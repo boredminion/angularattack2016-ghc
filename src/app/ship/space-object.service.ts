@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseListObservable} from 'angularfire2';
-import {ISpaceObject, Asteroid, Explosion, Planet, SpaceObjectType} from './';
+import {ISpaceObject, AIShip, Asteroid, Explosion, Planet, SpaceObjectType} from './';
 import {Direction} from '../map';
 import {AuthService, User} from '../shared';
 
@@ -9,6 +9,17 @@ export class SpaceObjectService {
 
 	spaceObjects: ISpaceObject[] = [];
 	spaceObjects$: FirebaseListObservable<ISpaceObject[]>;
+	SHIP_IMAGES: string[] = [
+		'spaceship-300x165.png',
+		'spaceship10-240x136.png',
+		'spaceship14-240x185.png',
+		'spaceship15-215x240.png',
+		'spaceship16-140x240.png',
+		'spaceship2-300x126.png',
+		'spaceship8-240x146.png',
+		'spaceship9-240x154.png',
+		'rocketship2-159x300.png'
+    ];
 	PLANET_IMAGES: string[] = [
 		'callisto-240x240.png',
 		'earth30-240x240.png',
@@ -39,10 +50,14 @@ export class SpaceObjectService {
 		});
 	}
 
+	createAIShip(x, y): void {
+		this.registerObject(new AIShip(x, y, this.SHIP_IMAGES[Math.floor(Math.random() * this.SHIP_IMAGES.length)]));
+	}
+
 	createAsteroid(x, y): void {
 		this.registerObject(new Asteroid(x, y));
 	}
-	
+
 	createPlanet(x, y, image): void {
 		if (!image) {
 			image = this.PLANET_IMAGES[Math.floor(Math.random() * this.PLANET_IMAGES.length)];
@@ -69,6 +84,16 @@ export class SpaceObjectService {
 	registerShip(ship: User) {
 		if (!ship.$key) {
 			return this.spaceObjects$.push(ship);
+		}
+	}
+
+	damage(ship: AIShip) {
+		if (ship.health) {
+			this.spaceObjects$.update(ship.$key, {
+				health: ship.health
+			});
+		} else {
+			this.spaceObjects$.remove(ship.$key);
 		}
 	}
 
