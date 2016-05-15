@@ -83,14 +83,14 @@ export class UserService {
 	}
 
 	scoreShip(ship: User) {
-    let newX = Math.floor(Math.random() * this.globalService.mapExtent);
-    let newY = Math.floor(Math.random() * this.globalService.mapExtent);
+    let newX = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
+    let newY = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
     let randomLocation = false;
     while(this.users.filter(user => {
       return user.x === newX && user.y === newY;
     }).length > 0) {
-      newX = Math.floor(Math.random() * this.globalService.mapExtent);
-      newY = Math.floor(Math.random() * this.globalService.mapExtent);
+      newX = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
+      newY = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
     }
     if (ship.health <= 0) {
       return this.users$.update(ship.$key, {
@@ -116,14 +116,14 @@ export class UserService {
 
   setShipName(newShipName: string, image: string, x: number, y: number, facing: Direction) {
     let currentUser: User = new User(newShipName || this.auth.username, image || 'spaceship14-240x185.png');
-    let newX = Math.floor(Math.random() * this.globalService.mapExtent);
-    let newY = Math.floor(Math.random() * this.globalService.mapExtent);
+    let newX = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
+    let newY = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
     let randomLocation = false;
     while(this.users.filter(user => {
       return user.x === newX && user.y === newY;
     }).length > 0) {
-      newX = Math.floor(Math.random() * this.globalService.mapExtent);
-      newY = Math.floor(Math.random() * this.globalService.mapExtent);
+      newX = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
+      newY = Math.floor(Math.random() * this.globalService.globalSettings.mapExtent);
     }
     if (x === null && y === null) {
       currentUser.x = newX;

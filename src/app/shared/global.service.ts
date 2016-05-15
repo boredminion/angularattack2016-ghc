@@ -1,15 +1,65 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseObjectObservable} from 'angularfire2';
 
+export interface ISettings {
+  mapExtent: number;
+  mapX: number;
+  mapY: number;
+  maxPlanets: number;
+  actionDelay: number;
+  baseShipHealth: number;
+  baseWeaponDamage: number;
+  baseWeaponRange: number;
+  mineValue: number;
+  tradeValue: number;
+  maxAsteroids: number;
+}
+
+export class Settings implements ISettings {
+  mapExtent: number;
+  mapX: number;
+  mapY: number;
+  maxPlanets: number;
+  actionDelay: number;
+  baseShipHealth: number;
+  baseWeaponDamage: number;
+  baseWeaponRange: number;
+  mineValue: number;
+  tradeValue: number;
+  maxAsteroids: number;
+  constructor() {
+    this.mapExtent = 100;
+    this.mapX = 9;
+    this.mapY = 11;
+    this.maxPlanets = 100;
+    this.maxAsteroids = 50;
+    this.actionDelay = 2;
+    this.baseShipHealth = 100;
+    this.baseWeaponDamage = 10;
+    this.baseWeaponRange = 1;
+    this.mineValue = 10;
+    this.tradeValue = 10;
+  }
+}
+
 @Injectable()
 export class GlobalService {
-  mapExtent: number = 100;
-  x: number = 9; //height of grid
-	y: number = 11; //width of grid
-	maxPlanets: number = 100;
+  public globalSettings$: FirebaseObjectObservable<ISettings>;
+  public globalSettings: ISettings = new Settings();
 
   constructor(private af: AngularFire) {
-    
+    this.globalSettings$ = this.af.database.object(`/settings`);
+    this.globalSettings$.subscribe(settings => {
+      if (settings === null) {
+        this.save(new Settings());
+      } else {
+        this.globalSettings = settings;
+      }
+    });
+  }
+  
+  save(newSettings: ISettings) {
+    this.globalSettings$.set(newSettings);
   }
 
 }

@@ -4,7 +4,7 @@ import {Subject}    from 'rxjs/Subject';
 import {ISpaceObject, SpaceObjectService, SpaceObjectType} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
-import {AuthService, UserService, User, GlobalService} from '../shared';
+import {UserService, User, GlobalService, Settings} from '../shared';
 
 export interface IAction {
 	label: string;
@@ -19,10 +19,10 @@ export class Action implements IAction {
 	active: boolean = true;
 	time: any;
 
-	constructor(label: string, action: any) {
+	constructor(label: string, action: any, time: number) {
 		this.label = label;
 		this.action = action;
-		this.time = 2;
+		this.time = time;
 		let interval = setInterval(() => {
 			if (this.time > 0) {
 				this.time--;
@@ -44,15 +44,10 @@ export class Action implements IAction {
 @Injectable()
 export class MapService {
 
-	// map$
-	x: number = 9; //height of grid
-	y: number = 11; //width of grid
-	extent: number = 100; //max dimension of the map
-	maxAsteroids: number = 50;
-	maxPlanets: number = 100;
 	tradeMission: any;
 
 
+	settings: Settings = new Settings();
 	ship: User;
 	ships: User[] = [];
 	grid$: Observable<Cell[][]>;
@@ -69,69 +64,70 @@ export class MapService {
 
 	constructor(
 		private userService: UserService,
-		authService: AuthService,
 		private spaceObjectService: SpaceObjectService,
 		private globalService: GlobalService) {
-			this.x = globalService.x;
-			this.y = globalService.y;
-			this.extent = globalService.mapExtent;
-			this.maxPlanets = globalService.maxPlanets;
-		
-		for (let i = 0; i < this.x; i++) {
-			this.visibleGrid.push([]);
-		}
-		for (let i = 0; i < this.extent; i++) {
-			this.fullGrid.push([]);
-			for (let j = 0; j < this.extent; j++) {
-				this.fullGrid[i][j] = new Cell(i, j);
+			
+			this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
+			this.grid$.subscribe(grid => {
+				this.visibleGrid = grid;
+			});
+			this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
+
+		globalService.globalSettings$.subscribe(function(settings) {
+			this.settings = settings;
+			for (let i = 0; i < this.settings.mapX; i++) {
+				this.visibleGrid.push([]);
 			}
-		}
-		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
-		this.grid$.subscribe(grid => {
-			this.visibleGrid = grid;
-		});
-		this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
-		userService.users$.subscribe(ships => {
-			this.ships = ships;
-			this.populateGrid();
-		});
-		userService.currentUser.subscribe(ship => {
-			this.ship = ship;
-		});
-		spaceObjectService.spaceObjects$.subscribe(objects => {
-			this.spaceObjects = objects;
-			let asteroidCount = 0;
-			let planetCount = 0;
-			this.fullGrid.forEach(row => row.forEach(cell => cell.planet = undefined));
-			this.spaceObjects.forEach(spaceObject => {
-				this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
-				switch (spaceObject.type) {
-					case SpaceObjectType.Asteroid:
-						asteroidCount++;
-						break;
-					case SpaceObjectType.Planet:
-						planetCount++;
-						break;
+			for (let i = 0; i < this.settings.mapExtent; i++) {
+				this.fullGrid.push([]);
+				for (let j = 0; j < this.settings.mapExtent; j++) {
+					this.fullGrid[i][j] = new Cell(i, j);
 				}
-				if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
-					spaceObjectService.spaceObjects$.remove(spaceObject.$key);
+			}
+
+			this.userService.users$.subscribe(ships => {
+				this.ships = ships;
+				this.populateGrid();
+			});
+			this.userService.currentUser.subscribe(ship => {
+				this.ship = ship;
+			});
+			this.spaceObjectService.spaceObjects$.subscribe(objects => {
+				this.spaceObjects = objects;
+				let asteroidCount = 0;
+				let planetCount = 0;
+				this.fullGrid.forEach(row => row.forEach(cell => cell.planet = undefined));
+				this.spaceObjects.forEach(spaceObject => {
+					this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
+					switch (spaceObject.type) {
+						case SpaceObjectType.Asteroid:
+							asteroidCount++;
+							break;
+						case SpaceObjectType.Planet:
+							planetCount++;
+							break;
+					}
+					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
+						spaceObjectService.spaceObjects$.remove(spaceObject.$key);
+					}
+				});
+				if (asteroidCount < this.settings.maxAsteroids) {
+					let planetX = Math.floor(Math.random() * this.settings.mapExtent);
+					let planetY = Math.floor(Math.random() * this.settings.mapExtent);
+					if (!this.fullGrid[planetX][planetY].planet) {
+						this.spaceObjectService.createAsteroid(planetX, planetY);
+					}
+				}
+				if (planetCount < this.settings.maxPlanets) {
+					let planetX = Math.floor(Math.random() * this.settings.mapExtent);
+					let planetY = Math.floor(Math.random() * this.settings.mapExtent);
+					if (!this.fullGrid[planetX][planetY].planet) {
+						this.spaceObjectService.createPlanet(planetX, planetY, null);
+					}
 				}
 			});
-			if (asteroidCount < this.maxAsteroids) {
-				let planetX = Math.floor(Math.random() * this.extent);
-				let planetY = Math.floor(Math.random() * this.extent);
-				if (!this.fullGrid[planetX][planetY].planet) {
-					this.spaceObjectService.createAsteroid(planetX, planetY);
-				}
-			}
-			if (planetCount < this.maxPlanets) {
-				let planetX = Math.floor(Math.random() * this.extent);
-				let planetY = Math.floor(Math.random() * this.extent);
-				if (!this.fullGrid[planetX][planetY].planet) {
-					this.spaceObjectService.createPlanet(planetX, planetY, null);
-				}
-			}
-		});
+		}.bind(this));
+
 		this.nextAction$.subscribe(action => {
 			this.currentAction = action;
 		});
@@ -157,29 +153,51 @@ export class MapService {
 		setTimeout(() => this.transitionsObserver.next(null), 1000);
 	}
 
-	pewPew(x, y) {
-		let hit = false;
-		this.ships.forEach(function(ship) {
+	pewPew() {
+		for (let i = 1; i <= this.settings.baseWeaponRange; i++) {
+			let x = 0;
+			let y = 0;
+			switch (this.ship.facing) {
+				case 0:
+					x = this.wraparound(this.ship.x - i, this.settings.mapExtent);
+					y = (this.ship.y);
+					break;
+				case 1:
+					x = (this.ship.x);
+					y = this.wraparound(this.ship.y + i, this.settings.mapExtent);
+					break;
+				case 2:
+					x = this.wraparound(this.ship.x + i, this.settings.mapExtent);
+					y = (this.ship.y);
+					break;
+				case 3:
+					x = (this.ship.x);
+					y = this.wraparound(this.ship.y - i, this.settings.mapExtent);
+					break;
+			}
+			let hit = false;
+			this.ships.forEach(function (ship) {
 			if (ship.x === x && ship.y === y) {
 				this.ship.currentScore++;
 				this.ship.totalScore++;
-				ship.currentScore = ship.currentScore > 0 ? ship.currentScore - 1 : 0;
-				ship.stolenScore = ship.stolenScore ? ship.stolenScore + 1 : 1;
-				ship.health = ship.health ? ship.health-10 : 90;
+				ship.currentScore = ship.currentScore-this.settings.baseWeaponDamage > 0 ? ship.currentScore - this.settings.baseWeaponDamage : 0;
+				ship.stolenScore = ship.stolenScore ? ship.stolenScore + this.settings.baseWeaponDamage : this.settings.baseWeaponDamage;
+				ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
 				this.userService.scoreOwnShip(this.ship);
 				this.userService.scoreShip(ship);
 				hit = true;
 				this.spaceObjectService.createBoom(x, y, true);
+				}
+			}.bind(this));
+			if (!hit) {
+				this.spaceObjectService.createBoom(x, y, false);
 			}
-		}.bind(this));
-		if (!hit) {
-			this.spaceObjectService.createBoom(x, y, false);
 		}
 	}
 
 	collisionCheck(x, y) {
 		let collide = false;
-		this.ships.forEach(function(ship) {
+		this.ships.forEach(function (ship) {
 			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
 				collide = true;
 			}
@@ -190,13 +208,13 @@ export class MapService {
 	forwardCell() {
 		switch (this.ship.facing) {
 			case 0:
-				return [this.wraparound(this.ship.x - 1, this.extent), (this.ship.y)];
+				return [this.wraparound(this.ship.x - 1, this.settings.mapExtent), (this.ship.y)];
 			case 1:
-				return [(this.ship.x), this.wraparound(this.ship.y + 1, this.extent)];
+				return [(this.ship.x), this.wraparound(this.ship.y + 1, this.settings.mapExtent)];
 			case 2:
-				return [this.wraparound(this.ship.x + 1, this.extent), (this.ship.y)];
+				return [this.wraparound(this.ship.x + 1, this.settings.mapExtent), (this.ship.y)];
 			case 3:
-				return [(this.ship.x), this.wraparound(this.ship.y - 1, this.extent)];
+				return [(this.ship.x), this.wraparound(this.ship.y - 1, this.settings.mapExtent)];
 		}
 	}
 
@@ -208,8 +226,8 @@ export class MapService {
 		}
 		this.ship.x = move[0];
 		this.ship.y = move[1];
-		this.ship.x = this.wraparound(this.ship.x, this.extent);
-		this.ship.y = this.wraparound(this.ship.y, this.extent);
+		this.ship.x = this.wraparound(this.ship.x, this.settings.mapExtent);
+		this.ship.y = this.wraparound(this.ship.y, this.settings.mapExtent);
 		this.populateGrid();
 		this.doAnimations(this.ship.facing);
 		this.userService.moveShip(this.ship);
@@ -239,27 +257,9 @@ export class MapService {
 		this.userService.moveShip(this.ship);
 	}
 
-	fireWeapon() {
-		console.log("pew pew");
-		switch (this.ship.facing) {
-			case 0:
-				this.pewPew(this.wraparound(this.ship.x - 1, this.extent), (this.ship.y));
-				break;
-			case 1:
-				this.pewPew((this.ship.x), this.wraparound(this.ship.y + 1, this.extent));
-				break;
-			case 2:
-				this.pewPew(this.wraparound(this.ship.x + 1, this.extent), (this.ship.y));
-				break;
-			case 3:
-				this.pewPew((this.ship.x), this.wraparound(this.ship.y - 1, this.extent));
-				break;
-		}
-	}
-
 	mine() {
 		let asteroid = this.fullGrid[this.ship.x][this.ship.y].planet;
-		if (asteroid) {
+		if (asteroid && asteroid.type === SpaceObjectType.Asteroid) {
 			asteroid.size--;
 			this.ship.currentScore++;
 			this.ship.totalScore++;
@@ -299,7 +299,7 @@ export class MapService {
 			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Move Forward')) {
-			this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
+			this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this), this.settings.actionDelay));
 		}
 	}
 
@@ -308,7 +308,7 @@ export class MapService {
 			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Rotate Left')) {
-			this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
+			this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this), this.settings.actionDelay));
 		}
 	}
 
@@ -317,7 +317,7 @@ export class MapService {
 			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Rotate Right')) {
-			this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
+			this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this), this.settings.actionDelay));
 		}
 	}
 
@@ -326,7 +326,7 @@ export class MapService {
 			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Fire')) {
-			this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
+			this._nextActionSource.next(new Action('Fire', this.pewPew.bind(this), this.settings.actionDelay));
 		}
 	}
 
@@ -335,7 +335,7 @@ export class MapService {
 			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Mine')) {
-			this._nextActionSource.next(new Action('Mine', this.mine.bind(this)));
+			this._nextActionSource.next(new Action('Mine', this.mine.bind(this), this.settings.actionDelay));
 		}
 	}
 
@@ -344,7 +344,7 @@ export class MapService {
 			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Trade')) {
-			this._nextActionSource.next(new Action('Trade', this.trade.bind(this)));
+			this._nextActionSource.next(new Action('Trade', this.trade.bind(this), this.settings.actionDelay));
 		}
 	}
 
@@ -392,16 +392,18 @@ export class MapService {
 				}
 			}
 		});
-		let visibleX = this.ship.x + 1 - Math.floor(this.x / 2);
-		let visibleY = this.ship.y + 1 - Math.floor(this.y / 2);
-		for (let i = 0; i < this.x; i++) {
-			for (let j = 0; j < this.y; j++) {
-				let gridX = this.wraparound(i + visibleX, this.extent);
-				let gridY = this.wraparound(j + visibleY, this.extent);
-				this.visibleGrid[i][j] = this.fullGrid[gridX][gridY];
+		if (this.ship) {
+			let visibleX = this.ship.x + 1 - Math.floor(this.settings.mapX / 2);
+			let visibleY = this.ship.y + 1 - Math.floor(this.settings.mapY / 2);
+			for (let i = 0; i < this.settings.mapX; i++) {
+				for (let j = 0; j < this.settings.mapY; j++) {
+					let gridX = this.wraparound(i + visibleX, this.settings.mapExtent);
+					let gridY = this.wraparound(j + visibleY, this.settings.mapExtent);
+					this.visibleGrid[i][j] = this.fullGrid[gridX][gridY];
+				}
 			}
+			this.gridObserver.next(this.visibleGrid);
 		}
-		this.gridObserver.next(this.visibleGrid);
 	}
 
 	wraparound(value, limit) {

@@ -8,15 +8,15 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>User</th>
+                <th>Ship</th>
                 <th>Score</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let user of userService.users; let i = index">
                 <th scope="row">{{i+1}}</th>
-                <td>{{user.displayName}}</td>
-                <td>{{shipService.getShip(user.$key)?.currentScore}}</td>
+                <td>{{user.shipName}}</td>
+                <td>{{user.currentScore}}</td>
               </tr>
             </tbody>
           </table>
@@ -40,8 +40,8 @@
             <tbody>
               <tr *ngFor="let user of userService.users; let i = index">
                 <th scope="row">{{i+1}}</th>
-                <td>{{user.displayName}}</td>
-                <td>{{shipService.getShip(user.$key)?.stolenScore}}</td>
+                <td>{{user.shipName}}</td>
+                <td>{{user.stolenScore}}</td>
               </tr>
             </tbody>
           </table>
@@ -65,8 +65,8 @@
             <tbody>
               <tr *ngFor="let user of userService.users; let i = index">
                 <th scope="row">{{i+1}}</th>
-                <td>{{user.displayName}}</td>
-                <td>{{shipService.getShip(user.$key)?.totalScore}}</td>
+                <td>{{user.shipName}}</td>
+                <td>{{user.totalScore}}</td>
               </tr>
             </tbody>
           </table>
