@@ -10,7 +10,7 @@ import {AdminComponent} from './admin';
 import {ScoresComponent} from './scores';
 import {IntroComponent} from './intro';
 import {AuthService, UserService, NotificationsService, Notification} from './shared';
-import {ToasterContainerComponent, ToasterService} from 'angular2-toaster/angular2-toaster';
+import {ToasterConfig, ToasterContainerComponent, ToasterService} from 'angular2-toaster/angular2-toaster';
 
 
 @Component({
@@ -33,6 +33,9 @@ export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
   score: number = 0;
   intro: boolean = true;
+  toasterconfig: any = new ToasterConfig({
+    positionClass: 'toast-top-center'
+  });
 
   constructor(private notificationsService: NotificationsService, private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
     notificationsService.notification$.subscribe(notification => {
