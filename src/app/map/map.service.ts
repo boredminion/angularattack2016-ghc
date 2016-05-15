@@ -498,30 +498,32 @@ export class MapService {
 
 	populateGrid() {
 		this.ships.forEach(ship => {
-			let shipKeys = Object.keys(ship);
-			if (shipKeys.indexOf('x') > -1 && shipKeys.indexOf('y') > -1) {
-				if (this.fullGrid[ship.x][ship.y].contents !== null) {
-					let gridShip: User = this.fullGrid[ship.x][ship.y].contents;
+			if (ship.online) {
+				let shipKeys = Object.keys(ship);
+				if (shipKeys.indexOf('x') > -1 && shipKeys.indexOf('y') > -1) {
+					if (this.fullGrid[ship.x][ship.y].contents !== null) {
+						let gridShip: User = this.fullGrid[ship.x][ship.y].contents;
 
-					if (gridShip && gridShip.x === ship.x && gridShip.y === ship.y && gridShip.facing === ship.facing && gridShip.$key === ship.$key) {
-						//don't do anything, ship didn't rotate or move
-					} else {
-						if (gridShip && gridShip.x === ship.x && gridShip.y === ship.y) {
-							// ship may be rotating
-							this.fullGrid[ship.x][ship.y].contents = ship;
+						if (gridShip && gridShip.x === ship.x && gridShip.y === ship.y && gridShip.facing === ship.facing && gridShip.$key === ship.$key) {
+							//don't do anything, ship didn't rotate or move
 						} else {
-							this.fullGrid[ship.x][ship.y].contents = ship;
-							this.fullGrid[ship.lastX][ship.lastY].contents = null;
+							if (gridShip && gridShip.x === ship.x && gridShip.y === ship.y) {
+								// ship may be rotating
+								this.fullGrid[ship.x][ship.y].contents = ship;
+							} else {
+								this.fullGrid[ship.x][ship.y].contents = ship;
+								this.fullGrid[ship.lastX][ship.lastY].contents = null;
+							}
 						}
-					}
-				} else {
-					// ship moved into an empty space
-					if (shipKeys.indexOf('lastX') > -1 && shipKeys.indexOf('lastY') > -1) {
-						if (this.fullGrid[ship.lastX][ship.lastY].contents && this.fullGrid[ship.lastX][ship.lastY].contents.$key === ship.$key) {
-							this.fullGrid[ship.lastX][ship.lastY].contents = null;
+					} else {
+						// ship moved into an empty space
+						if (shipKeys.indexOf('lastX') > -1 && shipKeys.indexOf('lastY') > -1) {
+							if (this.fullGrid[ship.lastX][ship.lastY].contents && this.fullGrid[ship.lastX][ship.lastY].contents.$key === ship.$key) {
+								this.fullGrid[ship.lastX][ship.lastY].contents = null;
+							}
 						}
+						this.fullGrid[ship.x][ship.y].contents = ship;
 					}
-					this.fullGrid[ship.x][ship.y].contents = ship;
 				}
 			}
 		});
