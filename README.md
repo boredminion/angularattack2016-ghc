@@ -31,7 +31,7 @@ While you can't make any checkins before the comp, what you **can** do right now
 
 * `npm install -g surge`
 
-* `surge .`
+* `surge dist ghc.2016.angularattack.io`
 
 Note: please do not remove the `CNAME` file, as that tells it where to deploy to.
 

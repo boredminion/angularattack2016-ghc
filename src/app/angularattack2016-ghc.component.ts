@@ -34,10 +34,6 @@ export class Angularattack2016GhcAppComponent implements OnInit {
 
   constructor(private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
   }
-  
-  popToast() {
-        this.toasterService.pop('success', 'Args Title', 'Args Body');
-    }
 
   checkIntro() {
     this.userService.currentUser.subscribe(user => {
