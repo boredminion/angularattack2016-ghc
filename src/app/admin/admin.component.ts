@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {GlobalService, ISettings, Settings} from '../shared';
 import {MapService} from '../map';
-import {SpaceObjectService, SpaceObjectType, Asteroid, Planet} from '../ship';
+import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet} from '../ship';
 
 @Component({
   moduleId: module.id,
@@ -12,20 +12,24 @@ import {SpaceObjectService, SpaceObjectType, Asteroid, Planet} from '../ship';
 export class AdminComponent implements OnInit {
   @Input() model;
   globalSettings: ISettings = new Settings();
+  aiShips: AIShip[] = [];
   asteroids: Asteroid[] = [];
   planets: Planet[] = [];
 
   constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService) {
-    this.globalSettings = globalService.globalSettings;
+    globalService.globalSettings$.subscribe(settings => this.globalSettings = settings);
     spaceObjectService.spaceObjects$.subscribe(spaceObjects => {
+      this.aiShips = [];
       this.asteroids = [];
       this.planets = [];
       spaceObjects.forEach(object => {
         switch (object.type) {
+          case SpaceObjectType.AIShip:
+            this.aiShips.push(object as AIShip);
+            break;
           case SpaceObjectType.Asteroid:
             this.asteroids.push(object as Asteroid);
             break;
-
           case SpaceObjectType.Planet:
             this.planets.push(object as Planet);
             break;
@@ -42,14 +46,15 @@ export class AdminComponent implements OnInit {
   }
 
   resetPlanets() {
-    if (this.planets.length > this.globalSettings.maxPlanets) {
-      for (let i = this.globalSettings.maxPlanets; i < this.planets.length; i++) {
+    let max = Math.min(this.globalSettings.maxPlanets, 500);
+    if (this.planets.length > max) {
+      for (let i = max; i < this.planets.length; i++) {
         let planet = this.planets[i];
         this.spaceObjectService.spaceObjects$.remove(planet.$key);
       }
     }
-    if (this.planets.length < this.globalSettings.maxPlanets) {
-      for (let i = this.planets.length; i < this.globalSettings.maxPlanets; i++) {
+    if (this.planets.length < max) {
+      for (let i = this.planets.length; i < max; i++) {
         this.mapService.createPlanet();
       }
     }
@@ -57,15 +62,31 @@ export class AdminComponent implements OnInit {
   }
 
   resetAsteroids() {
-    if (this.asteroids.length > this.globalSettings.maxAsteroids) {
-      for (let i = this.globalSettings.maxAsteroids; i < this.asteroids.length; i++) {
+    let max = Math.min(this.globalSettings.maxAsteroids, 500);
+    if (this.asteroids.length > max) {
+      for (let i = max; i < this.asteroids.length; i++) {
         let planet = this.asteroids[i];
         this.spaceObjectService.spaceObjects$.remove(planet.$key);
       }
     }
-    if (this.asteroids.length < this.globalSettings.maxAsteroids) {
-      for (let i = this.asteroids.length; i < this.globalSettings.maxAsteroids; i++) {
+    if (this.asteroids.length < max) {
+      for (let i = this.asteroids.length; i < max; i++) {
         this.mapService.createAsteroid();
+      }
+    }
+  }
+
+  resetAIShips() {
+    let max = Math.min(this.globalSettings.maxAIShips, 500);
+    if (this.aiShips.length > max) {
+      for (let i = max; i < this.aiShips.length; i++) {
+        let ship = this.aiShips[i];
+        this.spaceObjectService.spaceObjects$.remove(ship.$key);
+      }
+    }
+    if (this.aiShips.length < max) {
+      for (let i = this.aiShips.length; i < max; i++) {
+        this.mapService.createAIShip();
       }
     }
   }

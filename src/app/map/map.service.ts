@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable, Observer} from 'rxjs/Rx';
 import {Subject}    from 'rxjs/Subject';
-import {ISpaceObject, SpaceObjectService, SpaceObjectType} from '../ship';
+import {ISpaceObject, SpaceObjectService, SpaceObjectType, AIShip} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
 import {UserService, User, GlobalService, Settings} from '../shared';
@@ -98,9 +98,9 @@ export class MapService {
 				this.spaceObjects.forEach(spaceObject => {
 					this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
 					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
-						setTimeout(()=>{
+						setTimeout(() => {
 							spaceObjectService.spaceObjects$.remove(spaceObject.$key);
-						},1000)
+						}, 1000)
 					}
 				});
 			});
@@ -109,6 +109,14 @@ export class MapService {
 		this.nextAction$.subscribe(action => {
 			this.currentAction = action;
 		});
+	}
+
+	createAIShip() {
+		let planetX = Math.floor(Math.random() * this.settings.mapExtent);
+		let planetY = Math.floor(Math.random() * this.settings.mapExtent);
+		if (!this.fullGrid[planetX][planetY].contents) {
+			this.spaceObjectService.createAIShip(planetX, planetY);
+		}
 	}
 
 	createAsteroid() {
@@ -183,6 +191,20 @@ export class MapService {
 					this.spaceObjectService.createBoom(x, y, true);
 				}
 			}.bind(this));
+			if (!hit) {
+				this.spaceObjects.forEach(object => {
+					if (object.type === SpaceObjectType.AIShip && object.x === x && object.y === y) {
+						let ship = object as AIShip;
+						this.ship.currentScore++;
+						this.ship.totalScore++;
+						ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
+						this.userService.scoreOwnShip(this.ship);
+						this.spaceObjectService.damage(ship);
+						hit = true;
+						this.spaceObjectService.createBoom(x, y, true);
+					}
+				});
+			}
 			if (!hit) {
 				this.spaceObjectService.createBoom(x, y, false);
 			}
