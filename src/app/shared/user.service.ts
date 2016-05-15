@@ -83,7 +83,6 @@ export class UserService {
 	}
 
 	scoreShip(ship: User) {
-    console.log(ship);
     let newX = Math.floor(Math.random() * this.globalService.mapExtent);
     let newY = Math.floor(Math.random() * this.globalService.mapExtent);
     let randomLocation = false;
@@ -117,9 +116,18 @@ export class UserService {
 
   setShipName(newShipName: string, image: string, x: number, y: number, facing: Direction) {
     let currentUser: User = new User(newShipName || this.auth.username, image || 'spaceship14-240x185.png');
+    let newX = Math.floor(Math.random() * this.globalService.mapExtent);
+    let newY = Math.floor(Math.random() * this.globalService.mapExtent);
+    let randomLocation = false;
+    while(this.users.filter(user => {
+      return user.x === newX && user.y === newY;
+    }).length > 0) {
+      newX = Math.floor(Math.random() * this.globalService.mapExtent);
+      newY = Math.floor(Math.random() * this.globalService.mapExtent);
+    }
     if (x === null && y === null) {
-      currentUser.x = 0;
-      currentUser.y = 0;
+      currentUser.x = newX;
+      currentUser.y = newY;
     } else {
       currentUser.x = x;
       currentUser.y = y;
