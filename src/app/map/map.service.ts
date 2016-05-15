@@ -285,7 +285,7 @@ export class MapService {
 	addObjects(grid) {
 		let planetCount = 0;
 		this.spaceObjects.forEach(spaceObject => {
-			grid[spaceObject.x][spaceObject.y].contents = spaceObject;
+			grid[spaceObject.x][spaceObject.y].planet = spaceObject;
 			if(spaceObject.type === SpaceObjectType.Planet) {
 				planetCount++;
 			}
@@ -299,7 +299,7 @@ export class MapService {
 		if(planetCount < this.maxPlanets) {
 			let planetX = Math.floor(Math.random() * this.extent);
 			let planetY = Math.floor(Math.random() * this.extent);
-			if (!grid[planetX][planetY].contents) {
+			if(!grid[planetX][planetY].planet) {
 				this.spaceObjectService.createPlanet(planetX, planetY, null);
 			}
 		}
