@@ -16,6 +16,7 @@ export interface ISettings {
   maxAsteroids: number;
   maxAIShips: number;
   upgrades: Upgrade[];
+  bounty: number;
 }
 
 export class Settings implements ISettings {
@@ -32,6 +33,7 @@ export class Settings implements ISettings {
   maxAsteroids: number;
   maxAIShips: number;
   upgrades: Upgrade[] = [];
+  bounty: number = 50;
   constructor() {
     this.mapExtent = 100;
     this.mapX = 9;

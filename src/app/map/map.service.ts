@@ -205,7 +205,7 @@ export class MapService {
 		let weaponRange: number = this.settings.baseWeaponRange;
 		let weaponDamage: number = this.settings.baseWeaponDamage;
 		let shipHealth: number = this.settings.baseShipHealth;
-		if (!aiShip) {
+		if (!aiShip && this.ship.upgrades) {
 			let shipUpgrades = Object.keys(this.ship.upgrades).map(key => {
 				return this.ship.upgrades[key];
 			});
@@ -254,8 +254,11 @@ export class MapService {
 					ship.stolenScore = ship.stolenScore ? ship.stolenScore + weaponDamage : weaponDamage;
 					ship.health = ship.health ? ship.health - weaponDamage : shipHealth - weaponDamage;
 					if (!aiShip) {
-						this.ship.currentScore = this.ship.currentScore + weaponDamage;
-						this.ship.totalScore = this.ship.totalScore + weaponDamage;
+						this.ship.criminalScore = ship.health <= 0 && ship.wanted ? this.ship.criminalScore + 1 : this.ship.criminalScore;
+						this.ship.wanted = ship.wanted ? this.ship.wanted : true;
+						this.ship.bounty = ship.wanted ? (this.ship.bounty ? this.ship.bounty : this.settings.bounty) : (this.ship.bounty ? this.ship.bounty : this.settings.bounty) + this.settings.bounty;
+						this.ship.currentScore = ship.health <= 0 && ship.wanted ? this.ship.currentScore + weaponDamage + ship.bounty : this.ship.currentScore + weaponDamage;
+						this.ship.totalScore = ship.health <= 0 && ship.wanted ? this.ship.totalScore + weaponDamage + ship.bounty : this.ship.totalScore + weaponDamage;
 						this.userService.scoreOwnShip(this.ship);
 						this.userService.scoreShip(ship);
 					}

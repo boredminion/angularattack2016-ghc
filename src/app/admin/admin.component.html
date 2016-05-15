@@ -80,6 +80,12 @@
                   autofocus required min="1">
                 <small class="text-muted">Base Value for Weapon Damage</small>
               </fieldset>
+              <fieldset class="form-group">
+                <label for="bounty">Bounty Amount</label>
+                <input type="number" class="form-control" id="bounty" [(ngModel)]="globalSettings.bounty" autocomplete="off"
+                  autofocus required min="1">
+                <small class="text-muted">Amount to increase ship bounty when harming innocent ships</small>
+              </fieldset>
             </div>
           </div>
           <div class="card">

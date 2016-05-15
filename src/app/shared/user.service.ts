@@ -79,6 +79,9 @@ export class UserService {
   
   scoreOwnShip(ship: User) {
 		return this.currentUser.update({
+      wanted: ship.wanted ? ship.wanted : false,
+      bounty: ship.bounty ? ship.bounty : 0,
+      criminalScore: ship.criminalScore ? ship.criminalScore : 0,
 			currentScore: ship.currentScore ? ship.currentScore : 0,
 			stolenScore: ship.stolenScore ? ship.stolenScore : 0,
 			totalScore: ship.totalScore ? ship.totalScore : 0
@@ -106,7 +109,10 @@ export class UserService {
         stolenScore: ship.stolenScore ? ship.stolenScore : 0,
         totalScore: ship.totalScore ? ship.totalScore : 0,
         health: this.globalService.globalSettings.baseShipHealth,
-        upgrades: []
+        upgrades: [],
+        wanted: false,
+        bounty: 0,
+        criminalScore: ship.criminalScore ? ship.criminalScore : 0
       });
     } else {
       return this.users$.update(ship.$key, {

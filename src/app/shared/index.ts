@@ -33,7 +33,9 @@ export interface IUser {
 	totalScore: number;
 	admin: boolean;
 	upgrades: Upgrade[];
-	
+	wanted: boolean;
+	bounty: number;
+	criminalScore: number;
 }
 
 export class User implements IUser {
@@ -55,6 +57,9 @@ export class User implements IUser {
 	admin: boolean = false;
 	image: string;
 	upgrades: Upgrade[] = [];
+	wanted: boolean = false;
+	bounty: number = 0;
+	criminalScore: number = 0;
 	constructor(shipName: string, image: string) {
     this.shipName = shipName;
     this.image = image;
