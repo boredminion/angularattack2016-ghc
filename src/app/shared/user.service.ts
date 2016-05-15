@@ -16,6 +16,7 @@ export class UserService {
   public users: IUser[] = [];
   public users$: FirebaseListObservable<IUser[]>;
   public currentUser: FirebaseObjectObservable<IUser>;
+  private ship: User;
   private af: AngularFire;
   private auth: AuthService;
   private onlineRef: Firebase;
@@ -28,6 +29,9 @@ export class UserService {
         data => { this.users = data; }, err => console.log(err), () => console.log('done'));
     this.auth = auth;
     this.currentUser = this.af.database.object(`/users/` + this.auth.id);
+    this.currentUser.subscribe(user => {
+      this.ship = user;
+    });
     this.online = af.database.list('/users/' + this.auth.id + '/online');
     this.onlineRef = ref.child(`/users/` + this.auth.id + `/online`);
 
@@ -61,7 +65,13 @@ export class UserService {
   }
   
   moveShip(ship: User) {
-    return this.currentUser.update({ facing: ship.facing, x: ship.x, y: ship.y });
+    return this.currentUser.update({
+      facing: ship.facing,
+      lastX: this.ship.x,
+      lastY: this.ship.y,
+      x: ship.x,
+      y: ship.y
+    });
 	}
   
   scoreOwnShip(ship: User) {
