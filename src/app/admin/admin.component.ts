@@ -89,6 +89,9 @@ export class AdminComponent implements OnInit {
         this.spaceObjectService.spaceObjects$.remove(ship.$key);
       }
     }
+    this.aiShips.forEach(ship => {
+      this.spaceObjectService.spaceObjects$.update(ship.$key, { isControlled: false });
+    });
     if (this.aiShips.length < max) {
       for (let i = this.aiShips.length; i < max; i++) {
         this.mapService.createAIShip();

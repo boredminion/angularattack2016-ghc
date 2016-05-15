@@ -119,26 +119,29 @@ export class MapService {
 
 	aiAction() {
 		let ship = this.aiShips[Math.floor(Math.random() * this.aiShips.length)];
-		if (!ship.isControlled) {
-			this.spaceObjectService.spaceObjects$.update(ship.$key, { isControlled: true });
-			let order = Math.floor(Math.random() * 4);
-			switch (order) {
-				case 0:
-					//move
-					this.moveForward(ship);
-					break;
-				case 1:
-					//port
-					this.rotateLeft(ship);
-					break;
-				case 2:
-					//stb
-					this.rotateRight(ship);
-					break;
-				case 3:
-					//shoot
-					break;
-			}
+		if (ship && !ship.isControlled) {
+			this.spaceObjectService.spaceObjects$.update(ship.$key, { isControlled: true }).then(() => {
+				let order = Math.floor(Math.random() * 4);
+				switch (order) {
+					case 0:
+						//move
+						this.moveForward(ship);
+						break;
+					case 1:
+						//port
+						this.rotateLeft(ship);
+						break;
+					case 2:
+						//stb
+						this.rotateRight(ship);
+						break;
+					case 3:
+						this.pewPew(ship);
+						break;
+				}
+				setTimeout(() => this.spaceObjectService.spaceObjects$.update(ship.$key, { isControlled: false }), 2000);
+			});
+
 		}
 	}
 
@@ -186,38 +189,41 @@ export class MapService {
 		setTimeout(() => this.transitionsObserver.next(null), 1000);
 	}
 
-	pewPew() {
+	pewPew(aiShip) {
+		let shootingShip = aiShip || this.ship;
 		for (let i = 1; i <= this.settings.baseWeaponRange; i++) {
 			let x = 0;
 			let y = 0;
-			switch (this.ship.facing) {
+			switch (shootingShip.facing) {
 				case 0:
-					x = this.wraparound(this.ship.x - i, this.settings.mapExtent);
-					y = (this.ship.y);
+					x = this.wraparound(shootingShip.x - i, this.settings.mapExtent);
+					y = (shootingShip.y);
 					break;
 				case 1:
-					x = (this.ship.x);
-					y = this.wraparound(this.ship.y + i, this.settings.mapExtent);
+					x = (shootingShip.x);
+					y = this.wraparound(shootingShip.y + i, this.settings.mapExtent);
 					break;
 				case 2:
-					x = this.wraparound(this.ship.x + i, this.settings.mapExtent);
-					y = (this.ship.y);
+					x = this.wraparound(shootingShip.x + i, this.settings.mapExtent);
+					y = (shootingShip.y);
 					break;
 				case 3:
-					x = (this.ship.x);
-					y = this.wraparound(this.ship.y - i, this.settings.mapExtent);
+					x = (shootingShip.x);
+					y = this.wraparound(shootingShip.y - i, this.settings.mapExtent);
 					break;
 			}
 			let hit = false;
 			this.ships.forEach(function(ship) {
 				if (ship.x === x && ship.y === y) {
-					this.ship.currentScore++;
-					this.ship.totalScore++;
 					ship.currentScore = ship.currentScore - this.settings.baseWeaponDamage > 0 ? ship.currentScore - this.settings.baseWeaponDamage : 0;
 					ship.stolenScore = ship.stolenScore ? ship.stolenScore + this.settings.baseWeaponDamage : this.settings.baseWeaponDamage;
 					ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
-					this.userService.scoreOwnShip(this.ship);
-					this.userService.scoreShip(ship);
+					if (!aiShip) {
+						this.ship.currentScore++;
+						this.ship.totalScore++;
+						this.userService.scoreOwnShip(this.ship);
+						this.userService.scoreShip(ship);
+					}
 					hit = true;
 					this.spaceObjectService.createBoom(x, y, true);
 				}
@@ -226,10 +232,12 @@ export class MapService {
 				this.spaceObjects.forEach(object => {
 					if (object.type === SpaceObjectType.AIShip && object.x === x && object.y === y) {
 						let ship = object as AIShip;
-						this.ship.currentScore++;
-						this.ship.totalScore++;
 						ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
-						this.userService.scoreOwnShip(this.ship);
+						if (!aiShip) {
+							this.ship.currentScore++;
+							this.ship.totalScore++;
+							this.userService.scoreOwnShip(this.ship);
+						}
 						this.spaceObjectService.damage(ship);
 						hit = true;
 						this.spaceObjectService.createBoom(x, y, true);
@@ -273,6 +281,7 @@ export class MapService {
 	moveForward(ship) {
 		let movingShip = ship || this.ship;
 		let move = this.forwardCell(movingShip);
+		console.log(move);
 		if (this.collisionCheck(move[0], move[1])) {
 			console.log("can't move there");
 			return;
@@ -282,7 +291,7 @@ export class MapService {
 		movingShip.x = this.wraparound(movingShip.x, this.settings.mapExtent);
 		movingShip.y = this.wraparound(movingShip.y, this.settings.mapExtent);
 		this.populateGrid();
-		if(!ship) {
+		if (!ship) {
 			this.doAnimations(movingShip.facing);
 		}
 		this.updateShip(movingShip, !!ship);
@@ -315,7 +324,6 @@ export class MapService {
 			this.spaceObjectService.spaceObjects$.update(ship.$key, {
 				x: ship.x,
 				y: ship.y,
-				isControlled: false,
 				facing: ship.facing
 			});
 		} else {
