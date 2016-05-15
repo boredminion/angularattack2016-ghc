@@ -25,7 +25,7 @@ export class UserService {
     this.af = af;
     this.users$ = af.database.list(`/users`);
     this.users$.subscribe(
-        data => { this.users = data; console.log(this.users); }, err => console.log(err), () => console.log('done'));
+        data => { this.users = data; }, err => console.log(err), () => console.log('done'));
     this.auth = auth;
     this.currentUser = this.af.database.object(`/users/` + this.auth.id);
     this.online = af.database.list('/users/' + this.auth.id + '/online');
@@ -62,6 +62,14 @@ export class UserService {
   
   moveShip(ship: User) {
     return this.currentUser.update({ facing: ship.facing, x: ship.x, y: ship.y });
+	}
+  
+  scoreOwnShip(ship: User) {
+		return this.currentUser.update({
+			currentScore: ship.currentScore ? ship.currentScore : 0,
+			stolenScore: ship.stolenScore ? ship.stolenScore : 0,
+			totalScore: ship.totalScore ? ship.totalScore : 0
+		});
 	}
 
 	scoreShip(ship: User) {

@@ -105,12 +105,12 @@ export class MapService {
 
 	pewPew(x, y) {
 		this.ships.forEach(function(ship) {
-			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
+			if (ship.x === x && ship.y === y) {
 				this.ship.currentScore++;
 				this.ship.totalScore++;
 				ship.currentScore = ship.currentScore > 0 ? ship.currentScore - 1 : 0;
 				ship.stolenScore = ship.stolenScore ? ship.stolenScore + 1 : 1;
-				this.userService.scoreShip(this.ship);
+				this.userService.scoreOwnShip(this.ship);
 				this.userService.scoreShip(ship);
 			}
 		}.bind(this));
