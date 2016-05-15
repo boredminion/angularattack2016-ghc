@@ -85,7 +85,7 @@ export class MapService {
 
 	doAnimations(facing) {
 		let animation;
-		switch(facing) {
+		switch (facing) {
 			case Direction.Coreward:
 				animation = 'coreward';
 				break;
@@ -104,6 +104,7 @@ export class MapService {
 	}
 
 	pewPew(x, y) {
+		let hit = false;
 		this.ships.forEach(function(ship) {
 			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
 				this.ship.currentScore++;
@@ -112,8 +113,12 @@ export class MapService {
 				ship.stolenScore = ship.stolenScore ? ship.stolenScore + 1 : 1;
 				this.userService.scoreShip(this.ship);
 				this.userService.scoreShip(ship);
+				hit = true;
 			}
 		}.bind(this));
+		if (!hit) {
+			this.spaceObjectService.createBoom(x, y, false);
+		}
 	}
 
 	collisionCheck(x, y) {
@@ -285,9 +290,12 @@ export class MapService {
 	addObjects(grid) {
 		let planetCount = 0;
 		this.spaceObjects.forEach(spaceObject => {
-			grid[spaceObject.x][spaceObject.y].planet = spaceObject;
-			if(spaceObject.type === SpaceObjectType.Planet) {
-				planetCount++;
+			console.log(spaceObject);
+			if (grid[spaceObject.x][spaceObject.y].planet) {
+				grid[spaceObject.x][spaceObject.y].planet = spaceObject;
+				if (spaceObject.type === SpaceObjectType.Planet) {
+					planetCount++;
+				}
 			}
 		});
 		this.ships.forEach(ship => {
@@ -296,10 +304,10 @@ export class MapService {
 				grid[ship.x][ship.y].contents = ship;
 			}
 		});
-		if(planetCount < this.maxPlanets) {
+		if (planetCount < this.maxPlanets) {
 			let planetX = Math.floor(Math.random() * this.extent);
 			let planetY = Math.floor(Math.random() * this.extent);
-			if(!grid[planetX][planetY].planet) {
+			if (!grid[planetX][planetY].planet) {
 				this.spaceObjectService.createPlanet(planetX, planetY, null);
 			}
 		}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseListObservable} from 'angularfire2';
-import {ISpaceObject, Planet, Ship, SpaceObjectType} from './';
+import {ISpaceObject, Explosion, Planet, Ship, SpaceObjectType} from './';
 import {Direction} from '../map';
 import {AuthService} from '../shared/auth.service';
 
@@ -31,6 +31,7 @@ export class SpaceObjectService {
 		'saturn3-240x114.png',
 		'saturn5-300x124.png'
 	];
+	boomDuration: number = 2000;
 
 	constructor(private authService: AuthService, private af: AngularFire) {
 		this.spaceObjects$ = this.af.database.list('/space-objects') as FirebaseListObservable<ISpaceObject[]>;
@@ -44,10 +45,22 @@ export class SpaceObjectService {
 	}
 
 	createPlanet(x, y, image): void {
-		if(!image) {
+		if (!image) {
 			image = this.PLANET_IMAGES[Math.floor(Math.random() * this.PLANET_IMAGES.length)];
 		}
 		this.registerObject(new Planet(x, y, image));
+	}
+
+	createBoom(x, y, hit): void {
+		let image = 'fireworks6-150x150.png';
+		if (hit) {
+			image = 'explosion5-150x150.png';
+		}
+		this.registerObject(new Explosion(x, y, image)).then((boom: any) => {
+			setTimeout(() => {
+				this.spaceObjects$.remove(boom.path.u[1]);
+			}, this.boomDuration);
+		}) as any;
 	}
 
 	getShip(ownerKey) {
