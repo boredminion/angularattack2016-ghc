@@ -18,6 +18,10 @@
   z-index: 200;
 }
 
+.ship.type-3 {
+  z-index: -1;
+}
+
 .ship.coreward {
   /*transform: translate(0, -5vw);*/
 }
