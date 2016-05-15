@@ -285,7 +285,6 @@ export class MapService {
 	moveForward(ship) {
 		let movingShip = ship || this.ship;
 		let move = this.forwardCell(movingShip);
-		console.log(move);
 		if (this.collisionCheck(move[0], move[1])) {
 			console.log("can't move there");
 			return;
