@@ -3,4 +3,5 @@ export interface ICell {
 	y: number;
 	contents: any;
 	planet: any;
+	explosion: any;
 }

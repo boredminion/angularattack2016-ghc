@@ -1,15 +1,15 @@
 import {AuthService} from './auth.service';
 import {UserService} from './user.service';
+import {GlobalService} from './global.service';
 import {Direction} from '../map';
 
 export {AuthService};
 export {AuthRouteService} from './auth-route.service';
 
-
-export const AUTH_PROVIDERS: any[] = [AuthService];
-export const USER_PROVIDERS: any[] = [UserService];
+export const SHARED_PROVIDERS: any[] = [GlobalService, AuthService, UserService];
 export * from './user.service';
 export * from './online.pipe';
+export * from './global.service';
 
 export interface IUser {
   $key: string;
@@ -22,27 +22,28 @@ export interface IUser {
 	y: number;
   lastX: number;
   lastY: number;
+	health: number;
 	currentScore: number;
 	stolenScore: number;
 	totalScore: number;
 }
 
 export class User implements IUser {
-  $key: string;
+	$key: string;
+	facing: Direction;
   shipName: string;
   online: boolean;
-  image: string;
-  facing: Direction;
 	ownerKey: string;
 	x: number;
 	y: number;
   lastX: number;
   lastY: number;
-	currentScore: number;
-	stolenScore: number;
-	totalScore: number;
-
-  constructor(shipName: string, image: string) {
+	health: number = 100;
+	currentScore: number = 0;
+	stolenScore: number = 0;
+	totalScore: number = 0;
+	image: string;
+	constructor(shipName: string, image: string) {
     this.shipName = shipName;
     this.image = image;
   }

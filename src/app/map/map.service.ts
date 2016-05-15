@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Observable, Observer} from 'rxjs/Rx';
 import {Subject}    from 'rxjs/Subject';
-import {ISpaceObject, Ship, SpaceObjectService, SpaceObjectType} from '../ship';
+import {ISpaceObject, SpaceObjectService, SpaceObjectType} from '../ship';
 import {Direction} from './';
 import {Cell} from '../cell';
-import {AuthService, UserService} from '../shared';
-import {User} from '../shared';
+import {AuthService, UserService, User, GlobalService} from '../shared';
 
 export interface IAction {
 	label: string;
@@ -66,7 +65,16 @@ export class MapService {
 	transitionsObserver: Observer<string>;
 
 
-	constructor(private userService: UserService, authService: AuthService, private spaceObjectService: SpaceObjectService) {
+	constructor(
+		private userService: UserService,
+		authService: AuthService,
+		private spaceObjectService: SpaceObjectService,
+		private globalService: GlobalService) {
+			this.x = globalService.x;
+			this.y = globalService.y;
+			this.extent = globalService.mapExtent;
+			this.maxPlanets = globalService.maxPlanets;
+		
 		for (let i = 0; i < this.x; i++) {
 			this.visibleGrid.push([]);
 		}
@@ -96,6 +104,9 @@ export class MapService {
 				this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
 				if (spaceObject.type === SpaceObjectType.Planet) {
 					planetCount++;
+				}
+				if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
+					spaceObjectService.spaceObjects$.remove(spaceObject.$key);
 				}
 			});
 			if (planetCount < this.maxPlanets) {
@@ -139,6 +150,7 @@ export class MapService {
 				this.ship.totalScore++;
 				ship.currentScore = ship.currentScore > 0 ? ship.currentScore - 1 : 0;
 				ship.stolenScore = ship.stolenScore ? ship.stolenScore + 1 : 1;
+				ship.health = ship.health ? ship.health-10 : 90;
 				this.userService.scoreOwnShip(this.ship);
 				this.userService.scoreShip(ship);
 				hit = true;

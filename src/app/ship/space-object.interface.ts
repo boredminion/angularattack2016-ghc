@@ -10,4 +10,5 @@ export interface ISpaceObject {
 	currentScore: number;
 	stolenScore: number;
 	totalScore: number;
+	time: number;
 }

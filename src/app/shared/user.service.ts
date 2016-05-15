@@ -3,11 +3,11 @@ import 'rxjs/add/operator/share';
 
 import {Inject, Injectable} from '@angular/core';
 import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
-import {AuthService} from './';
+import {AuthService, IUser, User} from './';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import {Direction} from '../map';
-import {IUser, User} from './index';
+import {GlobalService} from './global.service';
 
 @Injectable()
 export class UserService {
@@ -22,7 +22,7 @@ export class UserService {
   private onlineRef: Firebase;
   private onlineItemRef: Firebase;
 
-  constructor(af: AngularFire, auth: AuthService, @Inject(FirebaseRef) ref: Firebase) {
+  constructor(private globalService: GlobalService, af: AngularFire, auth: AuthService, @Inject(FirebaseRef) ref: Firebase) {
     this.af = af;
     this.users$ = af.database.list(`/users`);
     this.users$.subscribe(
@@ -83,11 +83,36 @@ export class UserService {
 	}
 
 	scoreShip(ship: User) {
-		return this.users$.update(ship.$key, {
-			currentScore: ship.currentScore ? ship.currentScore : 0,
-			stolenScore: ship.stolenScore ? ship.stolenScore : 0,
-			totalScore: ship.totalScore ? ship.totalScore : 0
-		});
+    console.log(ship);
+    let newX = Math.floor(Math.random() * this.globalService.mapExtent);
+    let newY = Math.floor(Math.random() * this.globalService.mapExtent);
+    let randomLocation = false;
+    while(this.users.filter(user => {
+      return user.x === newX && user.y === newY;
+    }).length > 0) {
+      newX = Math.floor(Math.random() * this.globalService.mapExtent);
+      newY = Math.floor(Math.random() * this.globalService.mapExtent);
+    }
+    if (ship.health <= 0) {
+      return this.users$.update(ship.$key, {
+        facing: ship.facing,
+        lastX: ship.x,
+        lastY: ship.y,
+        x: newX,
+        y: newY,
+        currentScore: ship.currentScore ? ship.currentScore : 0,
+        stolenScore: ship.stolenScore ? ship.stolenScore : 0,
+        totalScore: ship.totalScore ? ship.totalScore : 0,
+        health: 100
+      });
+    } else {
+      return this.users$.update(ship.$key, {
+        currentScore: ship.currentScore ? ship.currentScore : 0,
+        stolenScore: ship.stolenScore ? ship.stolenScore : 0,
+        totalScore: ship.totalScore ? ship.totalScore : 0,
+        health: ship.health ? ship.health : 100
+      });
+    }
 	}
 
   setShipName(newShipName: string, image: string, x: number, y: number, facing: Direction) {

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseListObservable} from 'angularfire2';
-import {ISpaceObject, Explosion, Planet, Ship, SpaceObjectType} from './';
+import {ISpaceObject, Explosion, Planet, SpaceObjectType} from './';
 import {Direction} from '../map';
-import {AuthService} from '../shared/auth.service';
+import {AuthService, User} from '../shared';
 
 @Injectable()
 export class SpaceObjectService {
@@ -40,10 +40,6 @@ export class SpaceObjectService {
 		});
 	}
 
-	createShip(): Ship {
-		return new Ship(Direction.Coreward, 4, 5, this.authService.id, null);
-	}
-
 	createPlanet(x, y, image): void {
 		if (!image) {
 			image = this.PLANET_IMAGES[Math.floor(Math.random() * this.PLANET_IMAGES.length)];
@@ -63,17 +59,11 @@ export class SpaceObjectService {
 		}) as any;
 	}
 
-	getShip(ownerKey) {
-		return this.spaceObjects.find(spaceObject => {
-			return spaceObject.ownerKey === ownerKey;
-		});
-	}
-
 	registerObject(obj: ISpaceObject) {
 		return this.spaceObjects$.push(obj);
 	}
 
-	registerShip(ship: Ship) {
+	registerShip(ship: User) {
 		if (!ship.$key) {
 			return this.spaceObjects$.push(ship);
 		}

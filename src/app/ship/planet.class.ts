@@ -10,6 +10,7 @@ export class Planet implements ISpaceObject {
 	totalScore: number = 0;
 	image: string;
 	ownerKey: string;
+	time: number;
 	constructor(x, y, image) {
 		this.x = x;
 		this.y = y;

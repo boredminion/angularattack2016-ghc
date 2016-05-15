@@ -10,10 +10,12 @@ export class Explosion implements ISpaceObject {
 	totalScore: number = 0;
 	image: string;
 	ownerKey: string;
+	time: number;
 	constructor(x, y, image) {
 		this.x = x;
 		this.y = y;
 		this.type = SpaceObjectType.Explosion;
 		this.image = image;
+		this.time = Date.now();
 	}
 }
