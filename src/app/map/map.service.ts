@@ -218,7 +218,7 @@ export class MapService {
 					break;
 			}
 			let hit = false;
-			this.ships.forEach(function(ship) {
+			this.ships.forEach(function(ship: User) {
 				if (ship.x === x && ship.y === y) {
 					ship.currentScore = ship.currentScore - this.settings.baseWeaponDamage > 0 ? ship.currentScore - this.settings.baseWeaponDamage : 0;
 					ship.stolenScore = ship.stolenScore ? ship.stolenScore + this.settings.baseWeaponDamage : this.settings.baseWeaponDamage;
@@ -232,7 +232,7 @@ export class MapService {
 					hit = true;
 					console.log(aiShip);
 					if (!aiShip) {
-						this.notification.pop('success', 'Hit!', 'You hit ' + ship.name + ' for ' + this.settings.baseWeaponDamage + ' points!');
+						this.notification.pop('success', 'Hit!', 'You hit ' + ship.shipName + ' for ' + this.settings.baseWeaponDamage + ' points!');
 					}
 					this.spaceObjectService.createBoom(x, y, true);
 				}
