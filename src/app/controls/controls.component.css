@@ -1,0 +1,10 @@
+.control {
+	display: inline-block;
+	height: 7vw;
+	position: relative;
+	width: 7vw;
+}
+
+.btn-control {
+	height: 100%;
+}
