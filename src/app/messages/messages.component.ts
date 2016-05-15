@@ -28,8 +28,8 @@ export class MessagesComponent implements OnInit {
     this.messageText = '';
   }
   
-  getDisplayName(message: IMessage) {
-    let displayName = this.userService.getDisplayName(message.uid); 
+  getShipName(message: IMessage) {
+    let displayName = this.userService.getShipName(message.uid); 
     return displayName ? displayName : message.author;
   }
 }

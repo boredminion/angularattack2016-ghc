@@ -3,8 +3,6 @@
     <h3>Users</h3>
   </div>
   <div class="col-xs-12" *ngFor="let user of userService.users">
-    @{{user.displayName}} <span *ngIf="user.online">(Online)</span>
+    @{{user.shipName}} <span *ngIf="user.online">(Online)</span>
   </div>
 </div>
-<hr />
-<app-display-name></app-display-name>
