@@ -66,3 +66,4 @@ export class User implements IUser {
   }
 }
 export * from './notifications.service';
+export {UserSort} from './user-sort.pipe';

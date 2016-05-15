@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../shared';
+import {UserService, UserSort} from '../shared';
 import {SpaceObjectService} from '../ship';
 
 @Component({
   moduleId: module.id,
+  pipes: [ UserSort ],
   selector: 'app-scores',
   templateUrl: 'scores.component.html',
   styleUrls: ['scores.component.css']
