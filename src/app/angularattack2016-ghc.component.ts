@@ -58,7 +58,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
   signOut(): void {
     this.userService.setOffline();
     this.auth.signOut();
-    window.location.replace('/');
+    this.router.navigate(['/']);
   }
 
   signInWithGithub(): void {
@@ -67,7 +67,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
         // on fulfilled
         // this.userService.setOnline(); // this didn't work, refreshing the page sets a user
         // online though
-        window.location.replace('/map');
+        this.router.navigate(['/map']);
       },
       (err) => {
         // on rejected

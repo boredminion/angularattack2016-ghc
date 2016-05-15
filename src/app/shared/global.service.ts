@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseObjectObservable} from 'angularfire2';
+import {Upgrade} from '../ship';
 
 export interface ISettings {
   mapExtent: number;
@@ -14,6 +15,7 @@ export interface ISettings {
   tradeValue: number;
   maxAsteroids: number;
   maxAIShips: number;
+  upgrades: Upgrade[];
 }
 
 export class Settings implements ISettings {
@@ -29,6 +31,7 @@ export class Settings implements ISettings {
   tradeValue: number;
   maxAsteroids: number;
   maxAIShips: number;
+  upgrades: Upgrade[];
   constructor() {
     this.mapExtent = 100;
     this.mapX = 9;

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {GlobalService, ISettings, Settings} from '../shared';
 import {MapService} from '../map';
-import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet} from '../ship';
+import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet, Upgrade, UpgradeType} from '../ship';
 
 @Component({
   moduleId: module.id,
@@ -15,6 +15,9 @@ export class AdminComponent implements OnInit {
   aiShips: AIShip[] = [];
   asteroids: Asteroid[] = [];
   planets: Planet[] = [];
+  newArmor: Upgrade = new Upgrade('', '', UpgradeType.Armor);
+  newDamage: Upgrade = new Upgrade('', '', UpgradeType.Damage);
+  newRange: Upgrade = new Upgrade('', '', UpgradeType.Range);
 
   constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService) {
     globalService.globalSettings$.subscribe(settings => this.globalSettings = settings);
@@ -89,6 +92,22 @@ export class AdminComponent implements OnInit {
         this.mapService.createAIShip();
       }
     }
+  }
+  
+  saveArmor() {
+    
+  }
+  
+  saveDamage() {
+    
+  }
+  
+  saveRange() {
+    
+  }
+  
+  removeUpgrade() {
+    
   }
 
 }

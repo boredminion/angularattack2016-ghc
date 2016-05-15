@@ -52,3 +52,4 @@ export class User implements IUser {
     this.image = image;
   }
 }
+export * from './upgrade.pipe';
