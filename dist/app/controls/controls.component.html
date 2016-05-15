@@ -1,0 +1,27 @@
+<div (window.keydown)="keyAction($event);">
+  <div class="row">
+    <div class="control">
+      <button class="btn btn-secondary btn-block btn-control" (click)="mapService.actionRotateLeft()">Left</button>
+    </div>
+    <div class="control">
+      <button class="btn btn-secondary btn-block btn-control" (click)="mapService.actionMoveForward()">Fwd</button>
+    </div>
+    <div class="control">
+      <button class="btn btn-secondary btn-block btn-control" (click)="mapService.actionRotateRight()">Right</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="control">
+      <button class="btn btn-secondary btn-block btn-control" (click)="mapService.actionMine()">Mine</button>
+    </div>
+    <div class="control">
+      <button class="btn btn-secondary btn-block btn-control" (click)="mapService.trade()">Trade</button>
+    </div>
+    <div class="control">
+      <button class="btn btn-secondary btn-block btn-control" (click)="mapService.actionFireWeapon()">Fire</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">Next Action: {{(mapService.nextAction$ | async)?.label}} in... {{(mapService.nextAction$ | async)?.time}}</div>
+  </div>
+</div>

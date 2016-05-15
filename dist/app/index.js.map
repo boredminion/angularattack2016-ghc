@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["index.ts"],"names":[],"mappings":";AAAA,4BAA0B,eAAe,CAAC;AAAlC,gDAAkC;AAC1C,gDAA+C,mCAAmC,CAAC;AAA3E,8GAA2E","sourcesContent":["export {environment} from './environment';\nexport {Angularattack2016GhcAppComponent} from './angularattack2016-ghc.component';\n"]}

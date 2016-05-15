@@ -1,0 +1,138 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="card-group">
+        <div class="card">
+          <div class="card-header">
+            Overall High Score
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Ship</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of (userService.users | userSort:'currentScore'); let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.shipName}}</td>
+                <td>{{user.currentScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            Most Damaged
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of (userService.users | userSort:'stolenScore'); let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.shipName}}</td>
+                <td>{{user.stolenScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            Most Damage Done
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of (userService.users | userSort:'totalScore'); let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.shipName}}</td>
+                <td>{{user.totalScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="card-group">
+        <div class="card">
+          <div class="card-header">
+            Healthiest Ship
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Health</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of (userService.users | userSort:'health'); let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.shipName}}</td>
+                <td>{{user.health}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            Most Wanted
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Bounty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of (userService.users | userSort:'bounty'); let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.shipName}}</td>
+                <td>{{user.bounty}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            Most Criminals Killed
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Criminals</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of (userService.users | userSort:'criminalScore'); let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{user.shipName}}</td>
+                <td>{{user.criminalScore}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

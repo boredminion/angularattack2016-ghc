@@ -1,0 +1,11 @@
+<div class="tab-content messages">
+  <div class="input-group">
+    <input type="text" class="form-control" autocomplete="off" autofocus required placeholder="Your chat..." [(ngModel)]="messageText" (keydown.enter)="sendMessage(messageText, channel)" (keydown)="$event.stopPropagation();">
+    <span class="input-group-btn">
+      <button class="btn btn-secondary" type="button" (click)="sendMessage(messageText, channel)">Send</button>
+    </span>
+  </div>
+  <div class="text-md-left" *ngFor="let message of messages">
+    <a href="{{message.link}}">{{getShipName(message)}}</a>: {{message.text}}
+  </div>
+</div>

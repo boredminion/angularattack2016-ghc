@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="card-group">
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">Armor Upgrades</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'" [ngClass]="{'list-group-item-success':userPurchased(armor.$key)}">{{armor.name}}: {{armor.value}} Armor <span class="pull-right text-muted" [ngClass]="{'strikethrough':userPurchased(armor.$key)}">${{armor.cost}}</span>
+              <button *ngIf="!userPurchased(armor.$key)" class="btn btn-success" (click)="buyUpgrade(armor)" [disabled]="money < armor.cost">Buy</button>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">Damage Upgrades</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'" [ngClass]="{'list-group-item-success':userPurchased(damage.$key)}">{{damage.name}}: {{damage.value}} Damage <span class="pull-right text-muted" [ngClass]="{'strikethrough':userPurchased(damage.$key)}">${{damage.cost}}</span>
+              <button *ngIf="!userPurchased(damage.$key)" class="btn btn-success" (click)="buyUpgrade(damage)" [disabled]="money < damage.cost">Buy</button>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">Weapon Range Upgrades</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'" [ngClass]="{'list-group-item-success':userPurchased(range.$key)}">{{range.name}}: {{range.value}} Distance <span class="pull-right text-muted" [ngClass]="{'strikethrough':userPurchased(range.$key)}">${{range.cost}}</span>
+              <button *ngIf="!userPurchased(range.$key)" class="btn btn-success" (click)="buyUpgrade(range)" [disabled]="money < range.cost || user">Buy</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

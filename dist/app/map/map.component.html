@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-sm-9 starmap" ngClass="{{transitions}}">
+    <div class="container">
+      <div class="row" *ngFor="let row of grid">
+        <app-cell *ngFor="let cell of row" [cell]="cell" [transitions]="transitions"></app-cell>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <app-sidebar></app-sidebar>
+  </div>
+</div>

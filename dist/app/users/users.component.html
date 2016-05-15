@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">Users</h4>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item" *ngFor="let user of userService.users | online" [ngClass]="{'list-group-item-danger':user.wanted}">
+          {{user.shipName}} <span class="pull-right text-muted">@({{user.y}},{{user.x}})</span>
+          <br *ngIf="user.wanted" />
+          <h5 *ngIf="user.wanted">Bounty: ${{user.bounty}}</h5>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

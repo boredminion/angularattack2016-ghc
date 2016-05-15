@@ -1,0 +1,21 @@
+<div class="container">
+  <form (ngSubmit)="save()">
+    <fieldset class="form-group">
+      <label for="shipName">What do you want your ship to be called?</label>
+      <input type="text" class="form-control" id="shipName" placeholder="Ship name" [(ngModel)]="shipName" autocomplete="off"
+        autofocus required>
+      <small class="text-muted">This will be how you're displayed in the 'verse.</small>
+    </fieldset>
+    <div class="row">
+      <div class="col-xs-3" *ngFor="let ship of shipOptions">
+        <div class="card" [ngClass]="{'card-primary': ship == selectedShip}">
+          <img class="card-img-top" data-src="images/{{ship}}">
+          <div class="card-block">
+            <button type="button" class="btn btn-secondary" (click)="selectShip(ship)">Select</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Save</button>
+  </form>
+</div>

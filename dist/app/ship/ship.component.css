@@ -1,0 +1,63 @@
+.ship {
+  height: 5vw;
+  position: absolute;
+  width: 5vw;
+  transition: all 1s ease-out;
+  -webkit-transition: all 1s ease-out;
+}
+
+/* ship */
+.ship.type-0 {
+  z-index: 200;
+}
+
+/* planet */
+.ship.type-1 {
+  z-index: 100;
+}
+
+/* explosion */
+.ship.type-2 {
+  z-index: 500;
+}
+
+/* asteroid */
+.ship.type-3 {
+  z-index: 101;
+}
+
+.ship.coreward {
+  transform: translate(0, -5vw);
+}
+
+.ship.trailing {
+  transform: translate(5vw, 0);
+}
+
+.ship.rimward {
+  transform: translate(0, 5vw);
+}
+
+.ship.spinward {
+  transform: translate(-5vw, 0);
+}
+
+.ship.facing-0 {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.ship.facing-1 {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.ship.facing-2 {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.ship.facing-3 {
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}

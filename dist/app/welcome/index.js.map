@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["index.ts"],"names":[],"mappings":";AAAA,kCAA+B,qBAAqB,CAAC;AAA7C,gEAA6C","sourcesContent":["export {WelcomeComponent} from './welcome.component';\n"]}

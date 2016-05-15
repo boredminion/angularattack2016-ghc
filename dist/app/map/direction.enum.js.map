@@ -1,0 +1,1 @@
+{"version":3,"file":"direction.enum.js","sourceRoot":"","sources":["direction.enum.ts"],"names":[],"mappings":";AAAA,WAAY,SAAS;IACpB,iDAAQ,CAAA;IACR,iDAAQ,CAAA;IACR,+CAAO,CAAA;IACP,iDAAQ,CAAA;AACT,CAAC,EALW,iBAAS,KAAT,iBAAS,QAKpB;AALD,IAAY,SAAS,GAAT,iBAKX,CAAA","sourcesContent":["export enum Direction {\n\tCoreward,\n\tTrailing,\n\tRimward,\n\tSpinward\n}"]}

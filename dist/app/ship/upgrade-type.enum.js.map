@@ -1,0 +1,1 @@
+{"version":3,"file":"upgrade-type.enum.js","sourceRoot":"","sources":["upgrade-type.enum.ts"],"names":[],"mappings":";AAAA,WAAY,WAAW;IACtB,+CAAK,CAAA;IACL,iDAAM,CAAA;IACN,+CAAK,CAAA;AACN,CAAC,EAJW,mBAAW,KAAX,mBAAW,QAItB;AAJD,IAAY,WAAW,GAAX,mBAIX,CAAA","sourcesContent":["export enum UpgradeType {\n\tArmor,\n\tDamage,\n\tRange\n}"]}

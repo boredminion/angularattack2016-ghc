@@ -1,0 +1,1 @@
+{"version":3,"file":"upgrade.interface.js","sourceRoot":"","sources":["upgrade.interface.ts"],"names":[],"mappings":"","sourcesContent":["import {UpgradeType} from './';\n\nexport interface IUpgrade {\n\t$key: string;\n\tvalue: number;\n    name: string;\n\ttype: UpgradeType;\n    cost: number;\n}"]}
