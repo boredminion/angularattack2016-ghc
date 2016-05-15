@@ -229,6 +229,9 @@ export class MapService {
 						this.userService.scoreShip(ship);
 					}
 					hit = true;
+					if (!aiShip) {
+						this.toasterService.pop('success', 'Hit', 'You hit ' + ship.name + ' for ' + this.settings.baseWeaponDamage + ' points!');
+					}
 					this.spaceObjectService.createBoom(x, y, true);
 				}
 			}.bind(this));

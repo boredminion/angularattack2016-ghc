@@ -11,6 +11,6 @@ describe('Upgrades Pipe', () => {
   beforeEachProviders(() => [Upgrades]);
 
   it('should transform the input', inject([Upgrades], (pipe: Upgrades) => {
-      expect(pipe.transform(true)).toBe(null);
+      expect(pipe.transform(null)).toBe(null);
   }));
 });
