@@ -1,89 +1,184 @@
 <div class="container">
-  <form (ngSubmit)="save()">
-    <div class="card-group">
-      <div class="card">
-        <div class="card-block">
-          <h4 class="card-title">Universe</h4>
-          <!--<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little
+  <div class="row">
+    <div class="col-xs-12">
+      <form (ngSubmit)="save()">
+        <div class="card-group">
+          <div class="card">
+            <div class="card-block">
+              <h4 class="card-title">Universe</h4>
+              <!--<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little
             bit longer.</p>-->
-          <fieldset class="form-group">
-            <label for="mapExtent">Universe Size</label>
-            <input type="number" class="form-control" id="mapExtent" [(ngModel)]="globalSettings.mapExtent" autocomplete="off" autofocus required min="100">
-            <small class="text-muted">The max size for both X and Y dimensions</small>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="mapX">Local Map</label>
-            <input type="number" class="form-control" id="mapX" [(ngModel)]="globalSettings.mapX" autocomplete="off" autofocus required min="5">
-            <small class="text-muted">X-Dimension</small>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="mapY">Local Map</label>
-            <input type="number" class="form-control" id="mapY" [(ngModel)]="globalSettings.mapY" autocomplete="off" autofocus required min="5">
-            <small class="text-muted">Y-Dimension</small>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="numPlanets">Number of Planets ({{planets.length}})</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="numPlanets" [(ngModel)]="globalSettings.maxPlanets" autocomplete="off" autofocus required min="5" max="500">
-              <span class="input-group-btn">
+              <fieldset class="form-group">
+                <label for="mapExtent">Universe Size</label>
+                <input type="number" class="form-control" id="mapExtent" [(ngModel)]="globalSettings.mapExtent" autocomplete="off" autofocus
+                  required min="100">
+                <small class="text-muted">The max size for both X and Y dimensions</small>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="mapX">Local Map</label>
+                <input type="number" class="form-control" id="mapX" [(ngModel)]="globalSettings.mapX" autocomplete="off" autofocus required
+                  min="5">
+                <small class="text-muted">X-Dimension</small>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="mapY">Local Map</label>
+                <input type="number" class="form-control" id="mapY" [(ngModel)]="globalSettings.mapY" autocomplete="off" autofocus required
+                  min="5">
+                <small class="text-muted">Y-Dimension</small>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="numPlanets">Number of Planets ({{planets.length}})</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="numPlanets" [(ngModel)]="globalSettings.maxPlanets" autocomplete="off" autofocus
+                    required min="5" max="500">
+                  <span class="input-group-btn">
                 <button class="btn btn-default" (click)="resetPlanets();">Reset Planets</button>
               </span>
-            </div>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="maxAsteroids">Number of Asteroids ({{asteroids.length}})</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="maxAsteroids" [(ngModel)]="globalSettings.maxAsteroids" autocomplete="off" autofocus required min="5" max="200">
-              <span class="input-group-btn">
+                </div>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="maxAsteroids">Number of Asteroids ({{asteroids.length}})</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="maxAsteroids" [(ngModel)]="globalSettings.maxAsteroids" autocomplete="off"
+                    autofocus required min="5" max="200">
+                  <span class="input-group-btn">
                 <button class="btn btn-default" (click)="resetAsteroids();">Reset Asteroids</button>
               </span>
-            </div>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="maxAI">Number of AI Ships ({{aiShips.length}})</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="maxAIShips" [(ngModel)]="globalSettings.maxAIShips" autocomplete="off" autofocus required min="1" max="200">
-              <span class="input-group-btn">
+                </div>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="maxAI">Number of AI Ships ({{aiShips.length}})</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="maxAIShips" [(ngModel)]="globalSettings.maxAIShips" autocomplete="off" autofocus
+                    required min="1" max="200">
+                  <span class="input-group-btn">
                 <button class="btn btn-default" (click)="resetAIShips();">Reset AI Ships</button>
               </span>
+                </div>
+              </fieldset>
             </div>
-          </fieldset>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-block">
-          <h4 class="card-title">Ship</h4>
-          <!--<p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>-->
-          <fieldset class="form-group">
-            <label for="baseShipHealth">Ship Health</label>
-            <input type="number" class="form-control" id="baseShipHealth" [(ngModel)]="globalSettings.baseShipHealth" autocomplete="off" autofocus required min="1">
-            <small class="text-muted">Base Value for Ship Health</small>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="baseWeaponRange">Weapon Range</label>
-            <input type="number" class="form-control" id="baseWeaponRange" [(ngModel)]="globalSettings.baseWeaponRange" autocomplete="off" autofocus required min="1">
-            <small class="text-muted">Base Value for Weapon Range</small>
-          </fieldset>
-          <fieldset class="form-group">
-            <label for="baseWeaponDamage">Weapon Damage</label>
-            <input type="number" class="form-control" id="baseWeaponDamage" [(ngModel)]="globalSettings.baseWeaponDamage" autocomplete="off" autofocus required min="1">
-            <small class="text-muted">Base Value for Weapon Damage</small>
-          </fieldset>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-block">
-          <h4 class="card-title">Other</h4>
-          <!--<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even
+          </div>
+          <div class="card">
+            <div class="card-block">
+              <h4 class="card-title">Ship</h4>
+              <!--<p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>-->
+              <fieldset class="form-group">
+                <label for="baseShipHealth">Ship Health</label>
+                <input type="number" class="form-control" id="baseShipHealth" [(ngModel)]="globalSettings.baseShipHealth" autocomplete="off"
+                  autofocus required min="1">
+                <small class="text-muted">Base Value for Ship Health</small>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="baseWeaponRange">Weapon Range</label>
+                <input type="number" class="form-control" id="baseWeaponRange" [(ngModel)]="globalSettings.baseWeaponRange" autocomplete="off"
+                  autofocus required min="1">
+                <small class="text-muted">Base Value for Weapon Range</small>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="baseWeaponDamage">Weapon Damage</label>
+                <input type="number" class="form-control" id="baseWeaponDamage" [(ngModel)]="globalSettings.baseWeaponDamage" autocomplete="off"
+                  autofocus required min="1">
+                <small class="text-muted">Base Value for Weapon Damage</small>
+              </fieldset>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-block">
+              <h4 class="card-title">Other</h4>
+              <!--<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even
             longer content than the first to show that equal height action.</p>-->
-          <fieldset class="form-group">
-            <label for="actionDelay">Action Delay</label>
-            <input type="number" class="form-control" id="actionDelay" [(ngModel)]="globalSettings.actionDelay" autocomplete="off" autofocus required min="0" max="30">
-            <small class="text-muted">Amount of time between pushing a button and the action taking place (seconds)</small>
-          </fieldset>
+              <fieldset class="form-group">
+                <label for="actionDelay">Action Delay</label>
+                <input type="number" class="form-control" id="actionDelay" [(ngModel)]="globalSettings.actionDelay" autocomplete="off" autofocus
+                  required min="0" max="30">
+                <small class="text-muted">Amount of time between pushing a button and the action taking place (seconds)</small>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="card-group">
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">Armor Upgrades</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let armor of upgrades | upgrades:'Armor'">{{armor | json}}
+              <button class="btn btn-danger" (click)="removeUpgrade(armor.$key)">Remove</button>
+            </li>
+          </ul>
+          <div class="card-block">
+            <form (ngSubmit)="saveArmor()">
+              <fieldset class="form-group">
+                <label for="armorName">Name</label>
+                <input type="text" class="form-control" id="armorName" [(ngModel)]="newArmor.name" autocomplete="off" autofocus
+                  required>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="armorValue">Amount</label>
+                <input type="number" class="form-control" id="armorValue" [(ngModel)]="newArmor.value" autocomplete="off" autofocus
+                  required min="0" max="5">
+              </fieldset>
+              <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">Damage Upgrades</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let damage of upgrades | upgrades:'Damage'">{{damage | json}}
+              <button class="btn btn-danger" (click)="removeUpgrade(damage.$key)">Remove</button>
+            </li>
+          </ul>
+          <div class="card-block">
+            <form (ngSubmit)="saveDamage()">
+              <fieldset class="form-group">
+                <label for="damageName">Name</label>
+                <input type="text" class="form-control" id="damageName" [(ngModel)]="newDamage.name" autocomplete="off" autofocus
+                  required>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="damageValue">Amount</label>
+                <input type="number" class="form-control" id="damageValue" [(ngModel)]="newDamage.value" autocomplete="off" autofocus
+                  required min="0" max="5">
+              </fieldset>
+              <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">Range Upgrades</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let range of upgrades | upgrades:'Range'">{{range | json}}
+              <button class="btn btn-danger" (click)="removeUpgrade(range.$key)">Remove</button>
+            </li>
+          </ul>
+          <div class="card-block">
+            <form (ngSubmit)="saveRange()">
+              <fieldset class="form-group">
+                <label for="rangeName">Name</label>
+                <input type="text" class="form-control" id="rangeName" [(ngModel)]="newRange.name" autocomplete="off" autofocus
+                  required>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="rangeValue">Amount</label>
+                <input type="number" class="form-control" id="rangeValue" [(ngModel)]="newRange.value" autocomplete="off" autofocus
+                  required min="0" max="5">
+              </fieldset>
+              <button class="btn btn-primary" type="submit">Add</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-    <button class="btn btn-primary" type="submit">Save</button>
-  </form>
+  </div>
 </div>

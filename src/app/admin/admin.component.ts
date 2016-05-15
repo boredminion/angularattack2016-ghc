@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {GlobalService, ISettings, Settings} from '../shared';
 import {MapService} from '../map';
-import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet} from '../ship';
+import {Upgrades} from '../shared';
+import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet, Upgrade, UpgradeType} from '../ship';
 
 @Component({
   moduleId: module.id,
   selector: 'app-admin',
+  pipes: [Upgrades],
   templateUrl: 'admin.component.html',
   styleUrls: ['admin.component.css']
 })
@@ -15,9 +17,14 @@ export class AdminComponent implements OnInit {
   aiShips: AIShip[] = [];
   asteroids: Asteroid[] = [];
   planets: Planet[] = [];
+  upgrades: Upgrade[] = [];
+  newArmor: Upgrade = new Upgrade('', '', UpgradeType.Armor);
+  newDamage: Upgrade = new Upgrade('', '', UpgradeType.Damage);
+  newRange: Upgrade = new Upgrade('', '', UpgradeType.Range);
 
   constructor(private globalService: GlobalService, private mapService: MapService, private spaceObjectService: SpaceObjectService) {
     globalService.globalSettings$.subscribe(settings => this.globalSettings = settings);
+    globalService.upgrades.subscribe(upgrades => this.upgrades = upgrades);
     spaceObjectService.spaceObjects$.subscribe(spaceObjects => {
       this.aiShips = [];
       this.asteroids = [];
@@ -92,6 +99,25 @@ export class AdminComponent implements OnInit {
         this.mapService.createAIShip();
       }
     }
+  }
+  
+  saveArmor() {
+    this.globalService.saveUpgrade(this.newArmor);
+    this.newArmor = new Upgrade('','',UpgradeType.Armor);
+  }
+  
+  saveDamage() {
+    this.globalService.saveUpgrade(this.newDamage);
+    this.newDamage = new Upgrade('','',UpgradeType.Damage);
+  }
+  
+  saveRange() {
+    this.globalService.saveUpgrade(this.newRange);
+    this.newRange = new Upgrade('','',UpgradeType.Range);
+  }
+  
+  removeUpgrade(upgradeKey) {
+    this.globalService.removeUpgrade(upgradeKey);
   }
 
 }

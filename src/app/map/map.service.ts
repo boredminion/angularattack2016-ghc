@@ -5,6 +5,7 @@ import {ISpaceObject, SpaceObjectService, SpaceObjectType, AIShip} from '../ship
 import {Direction} from './';
 import {Cell} from '../cell';
 import {UserService, User, GlobalService, Settings} from '../shared';
+import {ToasterService} from 'angular2-toaster/angular2-toaster';
 
 export interface IAction {
 	label: string;
@@ -65,7 +66,8 @@ export class MapService {
 	constructor(
 		private userService: UserService,
 		private spaceObjectService: SpaceObjectService,
-		private globalService: GlobalService) {
+		private globalService: GlobalService,
+		private toaster: ToasterService) {
 
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		this.grid$.subscribe(grid => {
@@ -103,7 +105,6 @@ export class MapService {
 					if (spaceObject.x) {
 						this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
 					} else {
-						console.log(spaceObject);
 						spaceObjectService.spaceObjects$.remove(spaceObject.$key);
 					}
 					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {

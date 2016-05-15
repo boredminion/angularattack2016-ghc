@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import {AngularFire, FirebaseObjectObservable} from 'angularfire2';
+import { Inject, Injectable } from '@angular/core';
+import {AngularFire, FirebaseObjectObservable, FirebaseListObservable, FirebaseRef} from 'angularfire2';
+import {Upgrade} from '../ship';
 
 export interface ISettings {
   mapExtent: number;
@@ -14,6 +15,7 @@ export interface ISettings {
   tradeValue: number;
   maxAsteroids: number;
   maxAIShips: number;
+  upgrades: Upgrade[];
 }
 
 export class Settings implements ISettings {
@@ -29,6 +31,7 @@ export class Settings implements ISettings {
   tradeValue: number;
   maxAsteroids: number;
   maxAIShips: number;
+  upgrades: Upgrade[] = [];
   constructor() {
     this.mapExtent = 100;
     this.mapX = 9;
@@ -49,13 +52,16 @@ export class Settings implements ISettings {
 export class GlobalService {
   public globalSettings$: FirebaseObjectObservable<ISettings>;
   public globalSettings: ISettings = new Settings();
+  public upgrades: FirebaseListObservable<Upgrade[]>;
 
-  constructor(private af: AngularFire) {
+  constructor(private af: AngularFire, @Inject(FirebaseRef) ref: Firebase) {
     this.globalSettings$ = this.af.database.object(`/settings`);
+    this.upgrades = this.af.database.list(`/settings/upgrades`);
     this.globalSettings$.subscribe(settings => {
       if (settings === null) {
         this.save(new Settings());
       } else {
+        console.log(settings);
         this.globalSettings = settings;
       }
     });
@@ -63,6 +69,14 @@ export class GlobalService {
   
   save(newSettings: ISettings) {
     this.globalSettings$.set(newSettings);
+  }
+  
+  saveUpgrade(newUpgrade: Upgrade) {
+    this.upgrades.push(newUpgrade);
+  }
+  
+  removeUpgrade(upgradeKey: string) {
+    this.upgrades.remove(upgradeKey);
   }
 
 }
