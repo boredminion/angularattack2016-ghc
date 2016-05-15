@@ -94,7 +94,7 @@ export class MapService {
 				this.populateGrid();
 			});
 			this.userService.currentUser.subscribe(ship => {
-				if (this.ship && this.ship.health && this.ship.health !== ship.health) {
+				if (this.ship && this.ship.health && this.ship.health !== ship.health && this.ship.health > ship.health) {
 					this.notification.pop('error', 'You were attacked!', 'You just took ' + (this.ship.health - ship.health) + ' points of damage!');
 				}
 				this.ship = ship;
