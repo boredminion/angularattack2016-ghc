@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {GlobalService, ISettings, Settings} from '../shared';
 import {MapService} from '../map';
+import {Upgrades} from '../shared';
 import {SpaceObjectService, SpaceObjectType, AIShip, Asteroid, Planet, Upgrade, UpgradeType} from '../ship';
 
 @Component({
   moduleId: module.id,
   selector: 'app-admin',
+  pipes: [Upgrades],
   templateUrl: 'admin.component.html',
   styleUrls: ['admin.component.css']
 })
@@ -95,18 +97,36 @@ export class AdminComponent implements OnInit {
   }
   
   saveArmor() {
-    
+    if (this.globalSettings.upgrades) {
+      this.globalSettings.upgrades.push(this.newArmor);
+    } else {
+      this.globalSettings.upgrades = [this.newArmor];
+    }
+    this.newArmor = new Upgrade('','',UpgradeType.Armor);
+    this.globalService.save(this.globalSettings);
   }
   
   saveDamage() {
-    
+    if (this.globalSettings.upgrades) {
+      this.globalSettings.upgrades.push(this.newDamage);
+    } else {
+      this.globalSettings.upgrades = [this.newDamage];
+    }
+    this.newDamage = new Upgrade('','',UpgradeType.Damage);
+    this.globalService.save(this.globalSettings);
   }
   
   saveRange() {
-    
+    if (this.globalSettings.upgrades) {
+      this.globalSettings.upgrades.push(this.newRange);
+    } else {
+      this.globalSettings.upgrades = [this.newRange];
+    }
+    this.newRange = new Upgrade('','',UpgradeType.Range);
+    this.globalService.save(this.globalSettings);
   }
   
-  removeUpgrade() {
+  removeUpgrade(upgradeKey) {
     
   }
 

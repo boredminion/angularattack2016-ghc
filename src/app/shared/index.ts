@@ -9,6 +9,7 @@ export {AuthRouteService} from './auth-route.service';
 export const SHARED_PROVIDERS: any[] = [GlobalService, AuthService, UserService];
 export * from './user.service';
 export * from './online.pipe';
+export * from './upgrades.pipe';
 export * from './global.service';
 
 export interface IUser {
@@ -52,4 +53,3 @@ export class User implements IUser {
     this.image = image;
   }
 }
-export * from './upgrade.pipe';

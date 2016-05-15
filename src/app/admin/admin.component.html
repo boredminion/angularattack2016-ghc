@@ -108,13 +108,22 @@
             <h4 class="card-title">Armor Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let armor of globalSettings.upgrades">{{armor | json}}
+            <li class="list-group-item" *ngFor="let armor of globalSettings.upgrades | upgrades:'Armor'">{{armor | json}}
               <button class="btn btn-danger">Remove</button>
             </li>
           </ul>
           <div class="card-block">
             <form (ngSubmit)="saveArmor()">
-              
+              <fieldset class="form-group">
+                <label for="armorName">Name</label>
+                <input type="text" class="form-control" id="armorName" [(ngModel)]="newArmor.name" autocomplete="off" autofocus
+                  required>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="armorValue">Amount</label>
+                <input type="number" class="form-control" id="armorValue" [(ngModel)]="newArmor.value" autocomplete="off" autofocus
+                  required min="0" max="5">
+              </fieldset>
               <button class="btn btn-primary" type="submit">Save</button>
             </form>
           </div>
@@ -124,13 +133,22 @@
             <h4 class="card-title">Damage Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let damage of globalSettings.upgrades">{{damage | json}}
+            <li class="list-group-item" *ngFor="let damage of globalSettings.upgrades | upgrades:'Damage'">{{damage | json}}
               <button class="btn btn-danger">Remove</button>
             </li>
           </ul>
           <div class="card-block">
             <form (ngSubmit)="saveDamage()">
-              
+              <fieldset class="form-group">
+                <label for="damageName">Name</label>
+                <input type="text" class="form-control" id="damageName" [(ngModel)]="newDamage.name" autocomplete="off" autofocus
+                  required>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="damageValue">Amount</label>
+                <input type="number" class="form-control" id="damageValue" [(ngModel)]="newDamage.value" autocomplete="off" autofocus
+                  required min="0" max="5">
+              </fieldset>
               <button class="btn btn-primary" type="submit">Save</button>
             </form>
           </div>
@@ -140,7 +158,7 @@
             <h4 class="card-title">Range Upgrades</h4>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let range of globalSettings.upgrades">{{range | json}}
+            <li class="list-group-item" *ngFor="let range of globalSettings.upgrades | upgrades:'Range'">{{range | json}}
               <button class="btn btn-danger">Remove</button>
             </li>
           </ul>
@@ -148,12 +166,12 @@
             <form (ngSubmit)="saveRange()">
               <fieldset class="form-group">
                 <label for="rangeName">Name</label>
-                <input type="text" class="form-control" id="rangeName" [(ngModel)]="globalSettings.rangeName" autocomplete="off" autofocus
+                <input type="text" class="form-control" id="rangeName" [(ngModel)]="newRange.name" autocomplete="off" autofocus
                   required>
               </fieldset>
               <fieldset class="form-group">
                 <label for="rangeValue">Amount</label>
-                <input type="number" class="form-control" id="rangeValue" [(ngModel)]="globalSettings.rangeValue" autocomplete="off" autofocus
+                <input type="number" class="form-control" id="rangeValue" [(ngModel)]="newRange.value" autocomplete="off" autofocus
                   required min="0" max="5">
               </fieldset>
               <button class="btn btn-primary" type="submit">Add</button>
