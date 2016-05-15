@@ -13,6 +13,9 @@ export class CellComponent implements OnInit {
   @Input()
   cell: any;
 
+  @Input()
+  transitions: string;
+
   constructor() { }
 
   ngOnInit() {

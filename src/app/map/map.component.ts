@@ -12,9 +12,11 @@ import {MapService} from './map.service';
 })
 export class MapComponent implements OnInit {
 	grid: Cell[][] = [];
+	transitions: string;
 
 	constructor(private mapService: MapService) {
 		mapService.grid$.subscribe(grid => this.grid = grid);
+		mapService.transitions$.subscribe(transitions => this.transitions = transitions);
 	 }
 
 	ngOnInit() {

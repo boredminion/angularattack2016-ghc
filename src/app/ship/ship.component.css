@@ -1,24 +1,42 @@
 .ship {
-	height: 5vw;
-	width: 5vw;
+  height: 5vw;
+  width: 5vw;
+  transition: all 2s ease-out;
+  -webkit-transition: all 2s ease-out;
 }
 
-.facing-0 {
-	-webkit-transform: rotate(0deg); 
-	transform:rotate(0deg);
+.ship.coreward {
+  transform: translate(0, 5vw);
 }
 
-.facing-1 {
-	-webkit-transform: rotate(90deg); 
-	transform:rotate(90deg);
+.ship.trailing {
+  transform: translate(5vw, 0);
 }
 
-.facing-2 {
-	-webkit-transform: rotate(180deg); 
-	transform:rotate(180deg);
+.ship.rimward {
+  transform: translate(0, -5vw);
 }
 
-.facing-3 {
-	-webkit-transform: rotate(270deg); 
-	transform:rotate(270deg);
+.ship.spinward {
+  transform: translate(-5vw, 0);
+}
+
+.ship.facing-0 {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.ship.facing-1 {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.ship.facing-2 {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.ship.facing-3 {
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg);
 }
