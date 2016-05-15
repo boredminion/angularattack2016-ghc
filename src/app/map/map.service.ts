@@ -66,12 +66,12 @@ export class MapService {
 		private userService: UserService,
 		private spaceObjectService: SpaceObjectService,
 		private globalService: GlobalService) {
-			
-			this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
-			this.grid$.subscribe(grid => {
-				this.visibleGrid = grid;
-			});
-			this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
+
+		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
+		this.grid$.subscribe(grid => {
+			this.visibleGrid = grid;
+		});
+		this.transitions$ = new Observable(observer => this.transitionsObserver = observer).share() as Observable<string>;
 
 		globalService.globalSettings$.subscribe(function(settings) {
 			this.settings = settings;
@@ -94,45 +94,37 @@ export class MapService {
 			});
 			this.spaceObjectService.spaceObjects$.subscribe(objects => {
 				this.spaceObjects = objects;
-				let asteroidCount = 0;
-				let planetCount = 0;
 				this.fullGrid.forEach(row => row.forEach(cell => cell.planet = undefined));
 				this.spaceObjects.forEach(spaceObject => {
 					this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
-					switch (spaceObject.type) {
-						case SpaceObjectType.Asteroid:
-							asteroidCount++;
-							break;
-						case SpaceObjectType.Planet:
-							planetCount++;
-							break;
-					}
 					if (spaceObject.type === SpaceObjectType.Explosion && spaceObject.time && Date.now() - spaceObject.time > 1000) {
 						setTimeout(()=>{
 							spaceObjectService.spaceObjects$.remove(spaceObject.$key);
 						},1000)
 					}
 				});
-				if (asteroidCount < this.settings.maxAsteroids) {
-					let planetX = Math.floor(Math.random() * this.settings.mapExtent);
-					let planetY = Math.floor(Math.random() * this.settings.mapExtent);
-					if (!this.fullGrid[planetX][planetY].planet) {
-						this.spaceObjectService.createAsteroid(planetX, planetY);
-					}
-				}
-				if (planetCount < this.settings.maxPlanets) {
-					let planetX = Math.floor(Math.random() * this.settings.mapExtent);
-					let planetY = Math.floor(Math.random() * this.settings.mapExtent);
-					if (!this.fullGrid[planetX][planetY].planet) {
-						this.spaceObjectService.createPlanet(planetX, planetY, null);
-					}
-				}
 			});
 		}.bind(this));
 
 		this.nextAction$.subscribe(action => {
 			this.currentAction = action;
 		});
+	}
+
+	createAsteroid() {
+		let planetX = Math.floor(Math.random() * this.settings.mapExtent);
+		let planetY = Math.floor(Math.random() * this.settings.mapExtent);
+		if (!this.fullGrid[planetX][planetY].planet) {
+			this.spaceObjectService.createAsteroid(planetX, planetY);
+		}
+	}
+
+	createPlanet() {
+		let planetX = Math.floor(Math.random() * this.settings.mapExtent);
+		let planetY = Math.floor(Math.random() * this.settings.mapExtent);
+		if (!this.fullGrid[planetX][planetY].planet) {
+			this.spaceObjectService.createPlanet(planetX, planetY, null);
+		}
 	}
 
 	doAnimations(facing) {
@@ -178,17 +170,17 @@ export class MapService {
 					break;
 			}
 			let hit = false;
-			this.ships.forEach(function (ship) {
-			if (ship.x === x && ship.y === y) {
-				this.ship.currentScore++;
-				this.ship.totalScore++;
-				ship.currentScore = ship.currentScore-this.settings.baseWeaponDamage > 0 ? ship.currentScore - this.settings.baseWeaponDamage : 0;
-				ship.stolenScore = ship.stolenScore ? ship.stolenScore + this.settings.baseWeaponDamage : this.settings.baseWeaponDamage;
-				ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
-				this.userService.scoreOwnShip(this.ship);
-				this.userService.scoreShip(ship);
-				hit = true;
-				this.spaceObjectService.createBoom(x, y, true);
+			this.ships.forEach(function(ship) {
+				if (ship.x === x && ship.y === y) {
+					this.ship.currentScore++;
+					this.ship.totalScore++;
+					ship.currentScore = ship.currentScore - this.settings.baseWeaponDamage > 0 ? ship.currentScore - this.settings.baseWeaponDamage : 0;
+					ship.stolenScore = ship.stolenScore ? ship.stolenScore + this.settings.baseWeaponDamage : this.settings.baseWeaponDamage;
+					ship.health = ship.health ? ship.health - this.settings.baseWeaponDamage : this.settings.baseShipHealth - this.settings.baseWeaponDamage;
+					this.userService.scoreOwnShip(this.ship);
+					this.userService.scoreShip(ship);
+					hit = true;
+					this.spaceObjectService.createBoom(x, y, true);
 				}
 			}.bind(this));
 			if (!hit) {
@@ -199,7 +191,7 @@ export class MapService {
 
 	collisionCheck(x, y) {
 		let collide = false;
-		this.ships.forEach(function (ship) {
+		this.ships.forEach(function(ship) {
 			if (ship.x === x && ship.y === y && ship.$key !== this.ship.$key) {
 				collide = true;
 			}
@@ -242,8 +234,6 @@ export class MapService {
 		} else {
 			this.ship.facing = 0;
 		}
-		// this.transitionsObserver.next('facing-' + oldFacing);
-		// setTimeout(() => this.transitionsObserver.next(null), 1000);
 		this.userService.moveShip(this.ship);
 	}
 
@@ -254,8 +244,6 @@ export class MapService {
 		} else {
 			this.ship.facing = 3;
 		}
-		// this.transitionsObserver.next('facing-' + oldFacing);
-		// setTimeout(() => this.transitionsObserver.next(null), 1000);
 		this.userService.moveShip(this.ship);
 	}
 

@@ -23,21 +23,21 @@
 }
 
 .starmap.coreward:before {
-  /*transform: translate(0, 5vw);
-  -webkit-transform: translate(0, 5vw);*/
+  transform: translate(0, 5vw);
+  -webkit-transform: translate(0, 5vw);
 }
 
 .starmap.trailing:before {
-  /*transform: translate(-5vw, 0);
-  -webkit-transform: translate(-5vw, 0);*/
+  transform: translate(-5vw, 0);
+  -webkit-transform: translate(-5vw, 0);
 }
 
 .starmap.rimward:before {
-  /*transform: translate(0, -5vw);
-  -webkit-transform: translate(0, -5vw);*/
+  transform: translate(0, -5vw);
+  -webkit-transform: translate(0, -5vw);
 }
 
 .starmap.spinward:before {
-  /*transform: translate(5vw, 0);
-  -webkit-transform: translate(5vw, 0);*/
+  transform: translate(5vw, 0);
+  -webkit-transform: translate(5vw, 0);
 }

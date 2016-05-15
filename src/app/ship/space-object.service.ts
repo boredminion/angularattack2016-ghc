@@ -10,7 +10,6 @@ export class SpaceObjectService {
 	spaceObjects: ISpaceObject[] = [];
 	spaceObjects$: FirebaseListObservable<ISpaceObject[]>;
 	PLANET_IMAGES: string[] = [
-		// 'asteroids-240x240.png',
 		'callisto-240x240.png',
 		'earth30-240x240.png',
 		'europa-240x240.png',

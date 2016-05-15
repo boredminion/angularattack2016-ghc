@@ -16,8 +16,9 @@
   z-index: 100;
 }
 
+/* explosion */
 .ship.type-2 {
-  z-index: 200;
+  z-index: 500;
 }
 
 /* asteroid */
@@ -26,19 +27,19 @@
 }
 
 .ship.coreward {
-  /*transform: translate(0, -5vw);*/
+  transform: translate(0, -5vw);
 }
 
 .ship.trailing {
-  /*transform: translate(5vw, 0);*/
+  transform: translate(5vw, 0);
 }
 
 .ship.rimward {
-  /*transform: translate(0, 5vw);*/
+  transform: translate(0, 5vw);
 }
 
 .ship.spinward {
-  /*transform: translate(-5vw, 0);*/
+  transform: translate(-5vw, 0);
 }
 
 .ship.facing-0 {

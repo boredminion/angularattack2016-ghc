@@ -8,31 +8,36 @@
             bit longer.</p>-->
           <fieldset class="form-group">
             <label for="mapExtent">Universe Size</label>
-            <input type="number" class="form-control" id="mapExtent" [(ngModel)]="globalSettings.mapExtent" autocomplete="off" autofocus
-              required min="100">
+            <input type="number" class="form-control" id="mapExtent" [(ngModel)]="globalSettings.mapExtent" autocomplete="off" autofocus required min="100">
             <small class="text-muted">The max size for both X and Y dimensions</small>
           </fieldset>
           <fieldset class="form-group">
             <label for="mapX">Local Map</label>
-            <input type="number" class="form-control" id="mapX" [(ngModel)]="globalSettings.mapX" autocomplete="off" autofocus required
-              min="5">
+            <input type="number" class="form-control" id="mapX" [(ngModel)]="globalSettings.mapX" autocomplete="off" autofocus required min="5">
             <small class="text-muted">X-Dimension</small>
           </fieldset>
           <fieldset class="form-group">
             <label for="mapY">Local Map</label>
-            <input type="number" class="form-control" id="mapY" [(ngModel)]="globalSettings.mapY" autocomplete="off" autofocus required
-              min="5">
+            <input type="number" class="form-control" id="mapY" [(ngModel)]="globalSettings.mapY" autocomplete="off" autofocus required min="5">
             <small class="text-muted">Y-Dimension</small>
           </fieldset>
           <fieldset class="form-group">
-            <label for="numPlanets">Number of Planets</label>
-            <input type="number" class="form-control" id="numPlanets" [(ngModel)]="globalSettings.maxPlanets" autocomplete="off" autofocus
-              required min="5">
+            <label for="numPlanets">Number of Planets ({{planets.length}})</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="numPlanets" [(ngModel)]="globalSettings.maxPlanets" autocomplete="off" autofocus required min="5">
+              <span class="input-group-btn">
+                <button class="btn btn-default" (click)="resetPlanets();">Reset Planets</button>
+              </span>
+            </div>
           </fieldset>
           <fieldset class="form-group">
-            <label for="maxAsteroids">Number of Asteroids</label>
-            <input type="number" class="form-control" id="maxAsteroids" [(ngModel)]="globalSettings.maxAsteroids" autocomplete="off"
-              autofocus required min="5">
+            <label for="maxAsteroids">Number of Asteroids ({{asteroids.length}})</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="maxAsteroids" [(ngModel)]="globalSettings.maxAsteroids" autocomplete="off" autofocus required min="5">
+              <span class="input-group-btn">
+                <button class="btn btn-default" (click)="resetAsteroids();">Reset Asteroids</button>
+              </span>
+            </div>
           </fieldset>
         </div>
       </div>
@@ -42,20 +47,17 @@
           <!--<p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>-->
           <fieldset class="form-group">
             <label for="baseShipHealth">Ship Health</label>
-            <input type="number" class="form-control" id="baseShipHealth" [(ngModel)]="globalSettings.baseShipHealth" autocomplete="off"
-              autofocus required min="1">
+            <input type="number" class="form-control" id="baseShipHealth" [(ngModel)]="globalSettings.baseShipHealth" autocomplete="off" autofocus required min="1">
             <small class="text-muted">Base Value for Ship Health</small>
           </fieldset>
           <fieldset class="form-group">
             <label for="baseWeaponRange">Weapon Range</label>
-            <input type="number" class="form-control" id="baseWeaponRange" [(ngModel)]="globalSettings.baseWeaponRange" autocomplete="off"
-              autofocus required min="1">
+            <input type="number" class="form-control" id="baseWeaponRange" [(ngModel)]="globalSettings.baseWeaponRange" autocomplete="off" autofocus required min="1">
             <small class="text-muted">Base Value for Weapon Range</small>
           </fieldset>
           <fieldset class="form-group">
             <label for="baseWeaponDamage">Weapon Damage</label>
-            <input type="number" class="form-control" id="baseWeaponDamage" [(ngModel)]="globalSettings.baseWeaponDamage" autocomplete="off"
-              autofocus required min="1">
+            <input type="number" class="form-control" id="baseWeaponDamage" [(ngModel)]="globalSettings.baseWeaponDamage" autocomplete="off" autofocus required min="1">
             <small class="text-muted">Base Value for Weapon Damage</small>
           </fieldset>
         </div>
@@ -67,14 +69,12 @@
             longer content than the first to show that equal height action.</p>-->
           <fieldset class="form-group">
             <label for="actionDelay">Action Delay</label>
-            <input type="number" class="form-control" id="actionDelay" [(ngModel)]="globalSettings.actionDelay" autocomplete="off" autofocus
-              required min="0" max="30">
+            <input type="number" class="form-control" id="actionDelay" [(ngModel)]="globalSettings.actionDelay" autocomplete="off" autofocus required min="0" max="30">
             <small class="text-muted">Amount of time between pushing a button and the action taking place (seconds)</small>
           </fieldset>
         </div>
       </div>
     </div>
-
     <button class="btn btn-primary" type="submit">Save</button>
   </form>
 </div>
