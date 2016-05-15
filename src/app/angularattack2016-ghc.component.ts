@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router, Routes} from '@angular/router';
-import {Location} from '@angular/common';
 import {NavbarComponent} from './navbar';
 import {WelcomeComponent} from './welcome';
 import {MessagesComponent} from './messages';
@@ -33,7 +32,7 @@ export class Angularattack2016GhcAppComponent implements OnInit {
   title = 'angularattack2016-ghc works!';
   score: number = 0;
 
-  constructor(private notificationsService: NotificationsService, private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router, private location: Location) {
+  constructor(private notificationsService: NotificationsService, private toasterService: ToasterService, private auth: AuthService, private userService: UserService, private router: Router) {
     notificationsService.notification$.subscribe(notification => {
       this.toasterService.pop(notification.type, notification.title, notification.message);
     });
@@ -46,10 +45,6 @@ export class Angularattack2016GhcAppComponent implements OnInit {
     this.userService.currentUser.subscribe(user => {
       if (!user.image) {
         this.router.navigate(['/intro']);
-      } else {
-        if (this.location.path() === '') {
-          this.router.navigate(['/map']);
-        }
       }
     });
   }
