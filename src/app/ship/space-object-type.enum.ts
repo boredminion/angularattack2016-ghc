@@ -1,5 +1,6 @@
 export enum SpaceObjectType {
 	Ship,
 	Planet,
-	Explosion
+	Explosion,
+	Asteroid
 }

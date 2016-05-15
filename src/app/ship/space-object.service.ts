@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseListObservable} from 'angularfire2';
-import {ISpaceObject, Explosion, Planet, Ship, SpaceObjectType} from './';
+import {ISpaceObject, Asteroid, Explosion, Planet, Ship, SpaceObjectType} from './';
 import {Direction} from '../map';
 import {AuthService} from '../shared/auth.service';
 
@@ -10,7 +10,7 @@ export class SpaceObjectService {
 	spaceObjects: ISpaceObject[] = [];
 	spaceObjects$: FirebaseListObservable<ISpaceObject[]>;
 	PLANET_IMAGES: string[] = [
-		'asteroids-240x240.png',
+		// 'asteroids-240x240.png',
 		'callisto-240x240.png',
 		'earth30-240x240.png',
 		'europa-240x240.png',
@@ -42,6 +42,10 @@ export class SpaceObjectService {
 
 	createShip(): Ship {
 		return new Ship(Direction.Coreward, 4, 5, this.authService.id, null);
+	}
+
+	createAsteroid(x, y): void {
+		this.registerObject(new Asteroid(x, y));
 	}
 
 	createPlanet(x, y, image): void {

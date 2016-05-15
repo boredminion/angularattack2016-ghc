@@ -6,16 +6,24 @@
   -webkit-transition: all 1s ease-out;
 }
 
+/* ship */
+.ship.type-0 {
+  z-index: 200;
+}
+
+/* planet */
 .ship.type-1 {
   z-index: 100;
 }
 
+/* explosion */
 .ship.type-2 {
   z-index: 500;
 }
 
+/* asteroid */
 .ship.type-3 {
-  z-index: -1;
+  z-index: 101;
 }
 
 .ship.coreward {

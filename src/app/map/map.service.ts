@@ -49,7 +49,9 @@ export class MapService {
 	x: number = 9; //height of grid
 	y: number = 11; //width of grid
 	extent: number = 100; //max dimension of the map
+	maxAsteroids: number = 50;
 	maxPlanets: number = 100;
+	tradeMission: any;
 
 
 	ship: User;
@@ -90,14 +92,27 @@ export class MapService {
 		});
 		spaceObjectService.spaceObjects$.subscribe(objects => {
 			this.spaceObjects = objects;
+			let asteroidCount = 0;
 			let planetCount = 0;
 			this.fullGrid.forEach(row => row.forEach(cell => cell.planet = undefined));
 			this.spaceObjects.forEach(spaceObject => {
 				this.fullGrid[spaceObject.x][spaceObject.y].planet = spaceObject;
-				if (spaceObject.type === SpaceObjectType.Planet) {
-					planetCount++;
+				switch (spaceObject.type) {
+					case SpaceObjectType.Asteroid:
+						asteroidCount++;
+						break;
+					case SpaceObjectType.Planet:
+						planetCount++;
+						break;
 				}
 			});
+			if (asteroidCount < this.maxAsteroids) {
+				let planetX = Math.floor(Math.random() * this.extent);
+				let planetY = Math.floor(Math.random() * this.extent);
+				if (!this.fullGrid[planetX][planetY].planet) {
+					this.spaceObjectService.createAsteroid(planetX, planetY);
+				}
+			}
 			if (planetCount < this.maxPlanets) {
 				let planetX = Math.floor(Math.random() * this.extent);
 				let planetY = Math.floor(Math.random() * this.extent);
@@ -230,11 +245,46 @@ export class MapService {
 		}
 	}
 
-	actionMoveForward() {
-		if (this.currentAction) {
-			if (this.currentAction.label !== 'Move Forward') {
-				this.currentAction.active = false;
+	mine() {
+		let asteroid = this.fullGrid[this.ship.x][this.ship.y].planet;
+		if (asteroid) {
+			asteroid.size--;
+			this.ship.currentScore++;
+			this.ship.totalScore++;
+			this.userService.scoreOwnShip(this.ship);
+			if (asteroid.size) {
+				this.spaceObjectService.spaceObjects$.update(asteroid.$key, { size: asteroid.size });
+			} else {
+				this.spaceObjectService.spaceObjects$.remove(asteroid.$key);
 			}
+		}
+	}
+
+	trade() {
+		let planet = this.fullGrid[this.ship.x][this.ship.y].planet;
+		if (planet) {
+			if (this.tradeMission) {
+				let x = Math.abs(this.tradeMission.x - this.ship.x);
+				let y = Math.abs(this.tradeMission.y - this.ship.y);
+				if (x > 50) {
+					x = x - 50;
+				}
+				if (y > 50) {
+					y = y - 50;
+				}
+				this.ship.currentScore += (x + y) / 2;
+				this.ship.totalScore += (x + y) / 2;
+				this.userService.scoreOwnShip(this.ship);
+				this.tradeMission = undefined;
+			} else {
+				this.tradeMission = { x: this.ship.x, y: this.ship.y };
+			}
+		}
+	}
+
+	actionMoveForward() {
+		if (this.currentAction && this.currentAction.label !== 'Move Forward') {
+			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Move Forward')) {
 			this._nextActionSource.next(new Action('Move Forward', this.moveForward.bind(this)));
@@ -242,10 +292,8 @@ export class MapService {
 	}
 
 	actionRotateLeft() {
-		if (this.currentAction) {
-			if (this.currentAction.label !== 'Rotate Left') {
-				this.currentAction.active = false;
-			}
+		if (this.currentAction && this.currentAction.label !== 'Rotate Left') {
+			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Rotate Left')) {
 			this._nextActionSource.next(new Action('Rotate Left', this.rotateLeft.bind(this)));
@@ -253,10 +301,8 @@ export class MapService {
 	}
 
 	actionRotateRight() {
-		if (this.currentAction) {
-			if (this.currentAction.label !== 'Rotate Right') {
-				this.currentAction.active = false;
-			}
+		if (this.currentAction && this.currentAction.label !== 'Rotate Right') {
+			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Rotate Right')) {
 			this._nextActionSource.next(new Action('Rotate Right', this.rotateRight.bind(this)));
@@ -264,13 +310,29 @@ export class MapService {
 	}
 
 	actionFireWeapon() {
-		if (this.currentAction) {
-			if (this.currentAction.label !== 'Fire') {
-				this.currentAction.active = false;
-			}
+		if (this.currentAction && this.currentAction.label !== 'Fire') {
+			this.currentAction.active = false;
 		}
 		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Fire')) {
 			this._nextActionSource.next(new Action('Fire', this.fireWeapon.bind(this)));
+		}
+	}
+
+	actionMine() {
+		if (this.currentAction && this.currentAction.label !== 'Mine') {
+			this.currentAction.active = false;
+		}
+		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Mine')) {
+			this._nextActionSource.next(new Action('Mine', this.mine.bind(this)));
+		}
+	}
+
+	actionTrade() {
+		if (this.currentAction && this.currentAction.label !== 'Trade') {
+			this.currentAction.active = false;
+		}
+		if (!this.currentAction || (this.currentAction && this.currentAction.label !== 'Trade')) {
+			this._nextActionSource.next(new Action('Trade', this.trade.bind(this)));
 		}
 	}
 
