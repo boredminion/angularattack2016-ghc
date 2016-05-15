@@ -67,7 +67,7 @@ export class MapService {
 		private spaceObjectService: SpaceObjectService,
 		private globalService: GlobalService,
 		private notification: NotificationsService) {
-			
+
 		this.grid$ = new Observable(observer => this.gridObserver = observer).share() as Observable<Cell[][]>;
 		this.grid$.subscribe(grid => {
 			this.visibleGrid = grid;
@@ -351,9 +351,13 @@ export class MapService {
 			this.userService.scoreOwnShip(this.ship);
 			if (asteroid.size) {
 				this.spaceObjectService.spaceObjects$.update(asteroid.$key, { size: asteroid.size });
+				this.notification.pop('success', 'Mining', 'You have mined valuable resources and increased your score.');
 			} else {
 				this.spaceObjectService.spaceObjects$.remove(asteroid.$key);
+				this.notification.pop('success', 'Mining', 'You have mined valuable resources and increased your score. This asteroid is now depleted.');
 			}
+		} else {
+			this.notification.pop('error', 'Mining', 'You can only mine asteroids.');
 		}
 	}
 
@@ -369,13 +373,22 @@ export class MapService {
 				if (y > 50) {
 					y = y - 50;
 				}
-				this.ship.currentScore += (x + y) / 2;
-				this.ship.totalScore += (x + y) / 2;
-				this.userService.scoreOwnShip(this.ship);
+				let score = (x + y) / 2;
+				if (score) {
+					this.ship.currentScore += score;
+					this.ship.totalScore += score;
+					this.userService.scoreOwnShip(this.ship);
+					this.notification.pop('success', 'Trade', 'You have sold your goods for a profit and earned ' + score + ' points!');
+				} else {
+					this.notification.pop('info', 'Trade', 'You decide not to carry any cargo.');
+				}
 				this.tradeMission = undefined;
 			} else {
 				this.tradeMission = { x: this.ship.x, y: this.ship.y };
+				this.notification.pop('success', 'Trade', 'You load your ship with cargo. You will earn more points the farther you take it.');
 			}
+		} else {
+			this.notification.pop('error', 'Trade', 'You can only conduct trade missions at planets.');
 		}
 	}
 
