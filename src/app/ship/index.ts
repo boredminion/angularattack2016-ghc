@@ -8,5 +8,6 @@ export { ShipComponent } from './ship.component';
 export { ISpaceObject } from './space-object.interface';
 export { Planet } from './planet.class';
 export { Explosion } from './explosion.class';
+export { Asteroid } from './asteroid.class';
 
 export { SpaceObjectType } from './space-object-type.enum';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFire, FirebaseListObservable} from 'angularfire2';
-import {ISpaceObject, Explosion, Planet, SpaceObjectType} from './';
+import {ISpaceObject, Asteroid, Explosion, Planet, SpaceObjectType} from './';
 import {Direction} from '../map';
 import {AuthService, User} from '../shared';
 
@@ -10,7 +10,7 @@ export class SpaceObjectService {
 	spaceObjects: ISpaceObject[] = [];
 	spaceObjects$: FirebaseListObservable<ISpaceObject[]>;
 	PLANET_IMAGES: string[] = [
-		'asteroids-240x240.png',
+		// 'asteroids-240x240.png',
 		'callisto-240x240.png',
 		'earth30-240x240.png',
 		'europa-240x240.png',
@@ -40,6 +40,10 @@ export class SpaceObjectService {
 		});
 	}
 
+	createAsteroid(x, y): void {
+		this.registerObject(new Asteroid(x, y));
+	}
+	
 	createPlanet(x, y, image): void {
 		if (!image) {
 			image = this.PLANET_IMAGES[Math.floor(Math.random() * this.PLANET_IMAGES.length)];
