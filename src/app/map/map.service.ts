@@ -240,8 +240,6 @@ export class MapService {
 		} else {
 			this.ship.facing = 0;
 		}
-		// this.transitionsObserver.next('facing-' + oldFacing);
-		// setTimeout(() => this.transitionsObserver.next(null), 1000);
 		this.userService.moveShip(this.ship);
 	}
 
@@ -252,8 +250,6 @@ export class MapService {
 		} else {
 			this.ship.facing = 3;
 		}
-		// this.transitionsObserver.next('facing-' + oldFacing);
-		// setTimeout(() => this.transitionsObserver.next(null), 1000);
 		this.userService.moveShip(this.ship);
 	}
 
